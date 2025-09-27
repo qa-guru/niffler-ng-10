@@ -10,6 +10,7 @@ import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.RegistrationPage;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestClassOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.lang.annotation.Target;
@@ -18,6 +19,7 @@ public class RegistrationTest {
     //Позитивные тесты
     private static final Config CFG = Config.getInstance();
     private RegistrationPage registrationTest = new RegistrationPage();
+    private LoginPage loginPage = new LoginPage();
 
     @NewUser
     @Test
@@ -47,4 +49,22 @@ public class RegistrationTest {
         Assertions.assertTrue(registrationTest.getErrorMessageForUsernameFld().isDisplayed());
         Assertions.assertTrue(registrationTest.getErrorMessageForPasswordFld().isDisplayed());
     }
+    @Test
+    public void checkMessageAfterIncorrectLogin(){
+        String expectedMessage = "Неверные учетные данные пользователя";
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .incorrectLogin("12","22");
+        Assertions.assertEquals(expectedMessage,loginPage.getTextFromMessage(loginPage.getMessageAfterIncorrectAuth()));
+    }
+    @Test
+    public void getTextAfterIncorrectPassAndConfirmPass(){
+        String expectedMessage = "Passwords should be equal";
+        Selenide.open(CFG.frontUrl(),LoginPage.class)
+                .goToRegistration()
+                .registredNewUser("user","2222","3333");
+        Assertions.assertEquals(expectedMessage,registrationTest.getTextFromElement(registrationTest.getMessagePasswordsShouldBeEqual()));
+
+    }
+
+
 }

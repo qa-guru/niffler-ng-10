@@ -20,6 +20,7 @@ public class RegistrationPage {
     //Сообщения об ошибках
     private final SelenideElement errorMessageForUsernameFld = $(By.xpath("(//span[@class=\"form__error\"])[1]"));
     private final SelenideElement errorMessageForPasswordFld = $(By.xpath("(//span[@class=\"form__error\"])[2]"));
+    private final SelenideElement messagePasswordsShouldBeEqual = $(By.xpath("//span[contains(text(),'Passwords should be equal')]"));
     //Сообщение о корректной авторизации
     private final SelenideElement messageAfterCorrectRegistration = $(By.xpath("//p[@class=\"form__paragraph form__paragraph_success\"]"));
     private final SelenideElement signInBtn = $(By.xpath("//a[@class=\"form_sign-in\"]"));
@@ -46,6 +47,10 @@ public class RegistrationPage {
     public LoginPage backToLoginPageFromRegistrationPage(){
         backToLoginPage.shouldBe(clickable).click();
         return new LoginPage();
+    }
+
+    public String getTextFromElement(SelenideElement element){
+        return element.getText();
     }
 
 
