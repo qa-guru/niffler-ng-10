@@ -16,7 +16,7 @@ public class AuthApiClient {
   private static final CookieManager cm = new CookieManager(null, CookiePolicy.ACCEPT_ALL);
 
   private final Retrofit retrofit = new Retrofit.Builder()
-      .baseUrl("https://auth.niffler-stage.qa.guru/")
+      .baseUrl("http://localhost:9000/")
       .addConverterFactory(JacksonConverterFactory.create())
       .client(new OkHttpClient.Builder()
           .cookieJar(new JavaNetCookieJar(
