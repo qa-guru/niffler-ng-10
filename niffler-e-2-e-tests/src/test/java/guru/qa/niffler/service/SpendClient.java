@@ -32,5 +32,9 @@ public interface SpendClient {
                                   Integer page,
                                   Integer size,List<String> sort);
 
+  List<CategoryJson> getCategories(String username, boolean excludeArchived);
 
+  CategoryJson addCatogory(CategoryJson category);
+
+  CategoryJson updateCatogory(CategoryJson categoryJson);
 }

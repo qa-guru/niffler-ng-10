@@ -133,5 +133,44 @@ public class SpendApiClient implements SpendClient{
     return response.body();
   }
 
+  @Override
+  public List<CategoryJson> getCategories(String username, boolean excludeArchived) {
+   final Response <List<CategoryJson>> response;
+   try {
+     response = spendApi.getCategories(username,excludeArchived)
+             .execute();
+   }catch (IOException e){
+    throw new  AssertionError(e);
+   }
+   assertEquals(200,response.code());
+   return response.body();
+  }
+
+  @Override
+  public CategoryJson addCatogory(CategoryJson category) {
+    final Response<CategoryJson> response;
+    try {
+      response = spendApi.addCategory(category)
+              .execute();
+    }catch (IOException e){
+      throw new AssertionError(e);
+    }
+    assertEquals(200,response.code());
+    return response.body();
+  }
+
+  @Override
+  public CategoryJson updateCatogory(CategoryJson categoryJson) {
+    Response<CategoryJson> response;
+    try {
+      response = spendApi.updateCategory(categoryJson)
+              .execute();
+    }catch (IOException e){
+      throw new AssertionError(e);
+    }
+    assertEquals(200,response.code());
+    return response.body();
+  }
+
 
 }
