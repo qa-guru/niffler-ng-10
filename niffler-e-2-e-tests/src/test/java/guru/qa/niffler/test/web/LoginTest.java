@@ -1,7 +1,6 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
-import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.page.LoginPage;
@@ -18,8 +17,5 @@ public class LoginTest {
     Selenide.open(CFG.frontUrl(), LoginPage.class)
         .login("duck", "12345")
         .checkThatPageLoaded();
-  }
-  public String getTextFromMessage(SelenideElement element){
-    return element.getText();
   }
 }

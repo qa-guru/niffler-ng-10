@@ -23,7 +23,8 @@ public class CreateSpendingExtension implements BeforeEachCallback {
         Spending.class
     ).ifPresent(
         anno -> {
-            SpendJson spendJson =   new SpendJson(
+          final SpendJson created = spendClient.createSpend(
+              new SpendJson(
                   null,
                   new Date(),
                   new CategoryJson(
@@ -36,8 +37,8 @@ public class CreateSpendingExtension implements BeforeEachCallback {
                   anno.amount(),
                   anno.description(),
                   anno.username()
-              );
-            final SpendJson created = spendClient.createSpend(spendJson);
+              )
+          );
           context.getStore(NAMESPACE).put(
               context.getUniqueId(),
               created
