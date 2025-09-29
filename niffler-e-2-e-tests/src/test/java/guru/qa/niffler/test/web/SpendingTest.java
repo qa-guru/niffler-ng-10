@@ -48,7 +48,8 @@ public class SpendingTest {
     }
 
     @Category(
-            username = "bazz12"
+            username = "bazz12",
+            archived = false
     )
     @Test
     void categoryShouldBeArchived(CategoryJson categoryJson) throws IOException {
@@ -59,14 +60,13 @@ public class SpendingTest {
     }
 
     @Category(
-            username = "bazz12"
+            username = "bazz12",
+            archived = true
     )
     @Test
     void categoryShouldNotBeArchived(CategoryJson categoryJson) throws IOException {
         final SpendApiClient spendClient = new SpendApiClient();
-        CategoryJson resp = spendClient.updateCategory(new CategoryJson(categoryJson.id(), categoryJson.name(), categoryJson.username(), true));
-        Assertions.assertTrue(resp.archived());
-        resp = spendClient.updateCategory(new CategoryJson(categoryJson.id(), categoryJson.name(), categoryJson.username(), false));
+        CategoryJson resp = spendClient.updateCategory(new CategoryJson(categoryJson.id(), categoryJson.name(), categoryJson.username(), false));
         Assertions.assertFalse(resp.archived());
     }
 }

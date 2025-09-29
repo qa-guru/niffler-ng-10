@@ -30,6 +30,18 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
                                 false
                         )
                 );
+
+                if (anno.archived()) {
+                    createdCategory = spendClient.updateCategory(
+                            new CategoryJson(
+                                    createdCategory.id(),
+                                    createdCategory.name(),
+                                    createdCategory.username(),
+                                    true
+                            )
+                    );
+                }
+
                 context.getStore(NAMESPACE).put(
                         context.getUniqueId(),
                         createdCategory
@@ -39,7 +51,6 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
             }
         });
     }
-
 
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) {
