@@ -16,7 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.lang.annotation.Target;
 @ExtendWith({CreateSpendingExtension.class, SpendingResolverExtension.class})
 public class RegistrationTest {
-    //Позитивные тесты
+    // Позитивные тесты
     private static final Config CFG = Config.getInstance();
     private RegistrationPage registrationTest = new RegistrationPage();
     private LoginPage loginPage = new LoginPage();
