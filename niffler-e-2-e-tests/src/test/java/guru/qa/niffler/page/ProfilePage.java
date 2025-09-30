@@ -14,7 +14,6 @@ public class ProfilePage {
     final SelenideElement confirmeArchiveBtn = $(By.xpath("//button[contains(text(),'Archive')]"));
     final SelenideElement confirmeBtn = $(By.xpath("//button[contains(text(),'Unarchive')]"));
     final SelenideElement categoryFld = $("#category");
-    final SelenideElement messageIfArchiveOd =
 
 
     public ProfilePage addNewCategory(String name){
@@ -34,9 +33,7 @@ public class ProfilePage {
         return this;
     }
 
-    public String checkTextInArchiveMessage(String s){
 
-    }
 
 
 
