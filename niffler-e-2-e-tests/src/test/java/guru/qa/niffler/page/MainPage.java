@@ -10,8 +10,8 @@ import static com.codeborne.selenide.Selenide.$;
 
 public class MainPage {
   private final SelenideElement spendingTable = $("#spendings");
-  private final SelenideElement profileBtn = $(By.xpath("//button[@class=\"MuiButtonBase-root MuiIconButton-root MuiIconButton-colorInherit MuiIconButton-sizeLarge css-1obba8g\"]"));
-
+  private final SelenideElement profileMenuBtn = $(By.xpath("//div[@class=\"MuiAvatar-root MuiAvatar-circular MuiAvatar-colorDefault css-1pqo26w\"]"));
+  private final SelenideElement profileBtn = $(By.xpath("//a[contains(text(), 'Profile')]"));
 
   public MainPage checkThatPageLoaded() {
     spendingTable.should(visible);
@@ -29,6 +29,7 @@ public class MainPage {
   }
 
   public ProfilePage goToProfilePage(){
+    profileMenuBtn.shouldBe(visible).click();
     profileBtn.shouldBe(visible).click();
     return new ProfilePage();
   }

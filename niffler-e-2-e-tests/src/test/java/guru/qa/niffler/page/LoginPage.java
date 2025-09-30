@@ -14,8 +14,8 @@ public class LoginPage {
   private final SelenideElement submitBtn = $("#login-button");
   private final SelenideElement createNewAccountBtn = $("#register-button");
   private final SelenideElement messageAfterIncorrectAuth = $(By.xpath("//p[@class=\"form__error\"]"));
-
-
+  private final SelenideElement profileMenuBtn = $(By.xpath("(//span[@class=\"MuiTouchRipple-root css-w0pj6f\"])[2]"));
+  private final SelenideElement profileBtn = $(By.xpath("//a[contains(text(), 'Profile')]"));
   public MainPage login(String username, String password) {
     usernameInput.val(username);
     passwordInput.val(password);
@@ -30,10 +30,15 @@ public class LoginPage {
   }
 
   public RegistrationPage goToRegistration(){
-
     createNewAccountBtn.shouldBe(Condition.clickable)
             .click();
     return new RegistrationPage();
+  }
+
+  public ProfilePage goToProfile(){
+    profileMenuBtn.shouldBe(visible).click();
+    profileBtn.shouldBe(visible).click();
+    return new ProfilePage();
   }
 
   public LoginPage checkThatPageLoad(){
@@ -43,6 +48,8 @@ public class LoginPage {
     createNewAccountBtn.shouldBe(visible);
     return this;
   }
+
+
   public String getTextFromMessage(SelenideElement element){
     return element.getText();
   }

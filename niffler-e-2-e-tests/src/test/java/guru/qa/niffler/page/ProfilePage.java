@@ -1,19 +1,28 @@
 package guru.qa.niffler.page;
 
+import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.commands.PressEnter;
+import guru.qa.niffler.model.CategoryModel;
 import org.openqa.selenium.By;
 
+import java.util.List;
+
 import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.*;
 
 public class ProfilePage {
-    final SelenideElement showArchiveCategoriesBtn = $(By.xpath(""));
-    final SelenideElement unarchiveCategory = $(By.xpath("//span[@class=\"MuiSwitch-thumb css-19gndve\"]"));
+    final SelenideElement showArchivedCategoriesBtn = $(By.xpath("//span[@class=\"MuiSwitch-root MuiSwitch-sizeMedium css-ecvcn9\"]"));
+    final SelenideElement unarchiveCategoryBtn = $(By.xpath("(//button[@aria-label=\"Unarchive category\"])[1]"));
+    final SelenideElement firstArchiveCategoryName = $(By.xpath("(//span[@class=\"MuiChip-label MuiChip-labelMedium css-14vsv3w\"])[1]"));
     final SelenideElement archiveCategoryBtn = $(By.xpath("//button[@aria-label=\"Archive category\"]"));
     final SelenideElement confirmeArchiveBtn = $(By.xpath("//button[contains(text(),'Archive')]"));
-    final SelenideElement confirmeBtn = $(By.xpath("//button[contains(text(),'Unarchive')]"));
+    final SelenideElement confirmeUnarchiveBtn = $(By.xpath("//button[contains(text(),'Unarchive')]"));
     final SelenideElement categoryFld = $("#category");
+    final SelenideElement correctArchiveMessage = $(By.xpath("//div[contains(text(),'is archived')]"));
+    final SelenideElement correctUnarchiveMessage = $(By.xpath("//div[contains(text(),'is unarchived')]"));
+
+
 
 
     public ProfilePage addNewCategory(String name){
@@ -27,18 +36,32 @@ public class ProfilePage {
     }
 
     public ProfilePage unarchiveCategory(){
-        showArchiveCategoriesBtn.shouldBe(visible).click();
-        unarchiveCategory.shouldBe(visible).click();
-        confirmeBtn.shouldBe(visible).click();
+        showArchivedCategoriesBtn.shouldBe(visible).click();
+        unarchiveCategoryBtn.shouldBe(visible).click();
+        confirmeUnarchiveBtn.shouldBe(visible).click();
         return this;
     }
 
+    public String haveRightMessageAfterArchivedCategory(String categoryName ){
+        return correctArchiveMessage.shouldBe(visible).getText();
+    }
+    public String haveRightMessageAfterUnarchiveCategory(String categoryName ){
+        return correctUnarchiveMessage.shouldBe(visible).getText();
+    }
 
+    public String getNameArchiveCategory(){
+        return firstArchiveCategoryName.shouldBe(visible).getText();
+    }
 
+    public ProfilePage archiveAllCategories(){
+        ElementsCollection allCategories = $$(By.xpath("//button[@aria-label=\"Archive category\"]"));
 
-
-
-
+        for (SelenideElement element: allCategories){
+            element.shouldBe(visible).click();
+            confirmeArchiveBtn.shouldBe(visible).click();
+        }
+        return this;
+    }
 
 
 }
