@@ -43,8 +43,6 @@ public interface SpendApi {
                                          @Query("size") Integer size,
                                          @Query("sort") List<String> sort);
 
-
-
   @GET("internal/categories/all")
   Call <List<CategoryJson>> getCategories(@Query("username") String username,
                                           @Query("excludeArchived") boolean excludeArchived);
@@ -53,8 +51,4 @@ public interface SpendApi {
 
   @PATCH("internal/categories/update")
   Call<CategoryJson> updateCategory(@Body CategoryJson category);
-
-
-
-
 }
