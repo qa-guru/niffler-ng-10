@@ -20,7 +20,6 @@ public interface SpendApi {
 
     @GET("internal/spends/all")
     Call<List<SpendJson>> getAllSpends(
-            @Query("filterPeriod") String filterPeriod,
             @Query("filterCurrency") CurrencyValues filterCurrency
     );
 

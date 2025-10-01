@@ -29,7 +29,7 @@ public class LoginPage {
         return this;
     }
 
-    public RegisterPage goToRegisterPage(){
+    public RegisterPage goToRegisterPage() {
         createAccount.click();
         headerElement.shouldHave(matchText("Sign up"));
         return new RegisterPage();
@@ -40,11 +40,9 @@ public class LoginPage {
         return this;
     }
 
-    public LoginPage checkErrorUrl(){
+    public LoginPage checkErrorUrl() {
         String url = url();
-        assertThat(url,containsString("/login?error"));
+        assertThat(url, containsString("/login?error"));
         return this;
     }
 }
-
-

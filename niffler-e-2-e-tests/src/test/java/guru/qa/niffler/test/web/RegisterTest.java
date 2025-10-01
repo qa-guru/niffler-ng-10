@@ -20,7 +20,6 @@ public class RegisterTest {
     private static final Config CFG = Config.getInstance();
     private final AuthApiClient authApiClient = new AuthApiClient();
 
-
     @Test
     void shouldRegisterNewUser() {
         String username = "test" + ThreadLocalRandom.current().nextInt(1, 101);
@@ -57,7 +56,7 @@ public class RegisterTest {
     }
 
     @Test
-    void shouldShowErrorIfPasswordAndSubmittedPasswordEqual() {
+    void shouldShowErrorIfPasswordAndSubmittedPasswordNotEqual() {
         String username = "test" + ThreadLocalRandom.current().nextInt(1, 101);
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .goToRegisterPage()

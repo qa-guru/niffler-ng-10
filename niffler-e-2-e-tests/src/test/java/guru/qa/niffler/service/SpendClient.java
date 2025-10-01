@@ -11,7 +11,7 @@ public interface SpendClient {
 
     SpendJson createSpend(SpendJson spend);
 
-    CategoryJson createCategory(CategoryJson category) throws IOException;
+    CategoryJson createCategory(CategoryJson category);
 
     Optional<CategoryJson> findCategoryByNameAndUsername(String categoryName, String username);
 }

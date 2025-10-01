@@ -48,7 +48,7 @@ public class SpendingTest {
     }
 
     @Category(
-            username = "bazz12",
+            username = "testtest",
             archived = false
     )
     @Test
@@ -56,11 +56,14 @@ public class SpendingTest {
         final SpendApiClient spendClient = new SpendApiClient();
         CategoryJson resp = spendClient.updateCategory(new CategoryJson(categoryJson.id(), categoryJson.name(), categoryJson.username(), true));
         Assertions.assertTrue(resp.archived());
-        spendClient.updateCategory(new CategoryJson(categoryJson.id(), categoryJson.name(), categoryJson.username(), false));
+        Selenide.open(CFG.frontUrl(), LoginPage.class).login("testtest", "test");
+        new MainPage().goToProfilePage()
+                .clickShowArchived()
+                .checkArchivedCategory(categoryJson.name());
     }
 
     @Category(
-            username = "bazz12",
+            username = "testtest",
             archived = true
     )
     @Test
@@ -68,5 +71,9 @@ public class SpendingTest {
         final SpendApiClient spendClient = new SpendApiClient();
         CategoryJson resp = spendClient.updateCategory(new CategoryJson(categoryJson.id(), categoryJson.name(), categoryJson.username(), false));
         Assertions.assertFalse(resp.archived());
+        Selenide.open(CFG.frontUrl(), LoginPage.class).login("testtest", "test");
+        new MainPage().goToProfilePage()
+                .clickShowArchived()
+                .checkActiveCategory(categoryJson.name());
     }
 }

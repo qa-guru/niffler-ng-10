@@ -21,34 +21,30 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
                 context.getRequiredTestMethod(),
                 Category.class
         ).ifPresent(anno -> {
-            try {
-                CategoryJson createdCategory = spendClient.createCategory(
+            CategoryJson createdCategory = spendClient.createCategory(
+                    new CategoryJson(
+                            UUID.randomUUID(),
+                            "category" + ThreadLocalRandom.current().nextInt(1, 101),
+                            anno.username(),
+                            false
+                    )
+            );
+
+            if (anno.archived()) {
+                createdCategory = spendClient.updateCategory(
                         new CategoryJson(
-                                UUID.randomUUID(),
-                                "category" + ThreadLocalRandom.current().nextInt(1, 101),
-                                anno.username(),
-                                false
+                                createdCategory.id(),
+                                createdCategory.name(),
+                                createdCategory.username(),
+                                true
                         )
                 );
-
-                if (anno.archived()) {
-                    createdCategory = spendClient.updateCategory(
-                            new CategoryJson(
-                                    createdCategory.id(),
-                                    createdCategory.name(),
-                                    createdCategory.username(),
-                                    true
-                            )
-                    );
-                }
-
-                context.getStore(NAMESPACE).put(
-                        context.getUniqueId(),
-                        createdCategory
-                );
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to create category", e);
             }
+
+            context.getStore(NAMESPACE).put(
+                    context.getUniqueId(),
+                    createdCategory
+            );
         });
     }
 
