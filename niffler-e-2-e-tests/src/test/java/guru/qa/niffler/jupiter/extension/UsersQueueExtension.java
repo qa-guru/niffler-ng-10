@@ -9,10 +9,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Optional;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -43,32 +40,31 @@ public class UsersQueueExtension implements
 
   @Override
   public void beforeTestExecution(ExtensionContext context) {
-    Arrays.stream(context.getRequiredTestMethod().getParameters())
-        .filter(p -> AnnotationSupport.isAnnotated(p, UserType.class))
-        .findFirst()
-        .map(p -> p.getAnnotation(UserType.class))
-        .ifPresent(ut -> {
-          Optional<StaticUser> user = Optional.empty();
-          StopWatch sw = StopWatch.createStarted();
-          while (user.isEmpty() && sw.getTime(TimeUnit.SECONDS) < 30) {
-            user = ut.empty()
-                ? Optional.ofNullable(EMPTY_USERS.poll())
-                : Optional.ofNullable(NOT_EMPTY_USERS.poll());
-          }
-          Allure.getLifecycle().updateTestCase(testCase ->
-              testCase.setStart(new Date().getTime())
-          );
-          user.ifPresentOrElse(
-              u ->
-                  context.getStore(NAMESPACE).put(
-                      context.getUniqueId(),
-                      u
-                  ),
-              () -> {
-                throw new IllegalStateException("Can`t obtain user after 30s.");
-              }
-          );
-        });
+      Map<UserType, StaticUser> users = new HashMap<>();
+
+      Arrays.stream(context.getRequiredTestMethod().getParameters())
+              .filter(p -> AnnotationSupport.isAnnotated(p, UserType.class))
+              .forEach(
+                      p -> {
+                          UserType ut = p.getAnnotation(UserType.class);
+                          Optional<StaticUser> user = Optional.empty();
+                          StopWatch sw = StopWatch.createStarted();
+                          while (user.isEmpty() && sw.getTime(TimeUnit.SECONDS) < 30) {
+                              user = ut.empty()
+                                      ? Optional.ofNullable(EMPTY_USERS.poll())
+                                      : Optional.ofNullable(NOT_EMPTY_USERS.poll());
+                          }
+                          Allure.getLifecycle().updateTestCase(testCase ->
+                                  testCase.setStart(new Date().getTime())
+                          );
+                          user.ifPresentOrElse(
+                                  u -> users.put(ut, u),
+                                  () -> {
+                                      throw new IllegalStateException("Can't obtain user after 30s.");
+                                  }
+                          );
+                      });
+      context.getStore(NAMESPACE).put(context.getUniqueId(), users);
   }
 
   @Override
