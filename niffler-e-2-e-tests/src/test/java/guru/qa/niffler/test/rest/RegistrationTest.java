@@ -13,9 +13,8 @@ public class RegistrationTest {
   private final AuthApiClient authApiClient = new AuthApiClient();
 
   @Test
-  @Disabled
   void newUserShouldRegisteredByApiCall() throws IOException {
-    final Response<Void> response = authApiClient.register("bazz", "12345");
+    final Response<Void> response = authApiClient.register("bazz1", "123451");
     Assertions.assertEquals(201, response.code());
   }
 }
