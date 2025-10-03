@@ -28,7 +28,6 @@ public class SpendApiClient implements SpendClient {
 
     private final SpendApi spendApi = retrofit.create(SpendApi.class);
 
-    @SneakyThrows
     @Override
     public SpendJson createSpend(SpendJson spend) {
         final Response<SpendJson> resp;
@@ -70,7 +69,7 @@ public class SpendApiClient implements SpendClient {
                 .findFirst();
     }
 
-    public CategoryJson updateCategory(CategoryJson categoryJson)  {
+    public CategoryJson updateCategory(CategoryJson categoryJson) {
         final Response<CategoryJson> resp;
         try {
             resp = spendApi.editCategory(categoryJson).execute();

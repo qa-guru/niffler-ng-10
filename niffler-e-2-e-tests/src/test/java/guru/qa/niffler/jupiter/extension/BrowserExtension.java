@@ -27,7 +27,6 @@ public class BrowserExtension implements
 
   @Override
   public void beforeEach(ExtensionContext context) throws Exception {
-    Configuration.timeout = 8000;
     SelenideLogger.addListener("Allure-selenide", new AllureSelenide()
         .savePageSource(false)
         .screenshots(false)
