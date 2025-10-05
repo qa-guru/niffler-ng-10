@@ -12,7 +12,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class CategoryExtension implements BeforeEachCallback, ParameterResolver, AfterTestExecutionCallback {
 
-    public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CreateSpendingExtension.class);
+    public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CategoryExtension.class);
     private final SpendApiClient spendClient = new SpendApiClient();
 
     @Override
@@ -60,7 +60,7 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
 
     @Override
     public void afterTestExecution(ExtensionContext context) throws Exception {
-        CategoryJson categoryJson = context.getStore(CreateSpendingExtension.NAMESPACE).get(context.getUniqueId(), CategoryJson.class);
+        CategoryJson categoryJson = context.getStore(CategoryExtension.NAMESPACE).get(context.getUniqueId(), CategoryJson.class);
         if (!categoryJson.archived()) {
             spendClient.updateCategory(new CategoryJson(
                     categoryJson.id(),
