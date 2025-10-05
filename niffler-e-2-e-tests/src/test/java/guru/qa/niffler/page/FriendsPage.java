@@ -29,7 +29,7 @@ public class FriendsPage {
     }
 
     public FriendsPage find(String user) {
-        searchInput.val(user).sendKeys(ENTER);
+        searchInput.val(user).pressEnter();
         return this;
     }
 

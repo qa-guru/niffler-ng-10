@@ -74,7 +74,6 @@ public class UsersQueueExtension implements
             for (Map.Entry<UserType.Type, StaticUser> entry : users.entrySet()) {
                 queueByType(entry.getKey()).add(entry.getValue());
             }
-            context.getStore(NAMESPACE).remove(context.getUniqueId());
         }
     }
 
