@@ -31,7 +31,6 @@ public class SpendController {
     this.spendService = spendService;
   }
 
-
   @GetMapping("/{id}")
   public SpendJson getSpend(@PathVariable("id") String id,
                             @RequestParam String username) {
@@ -63,6 +62,4 @@ public class SpendController {
                            @RequestParam List<String> ids) {
     spendService.deleteSpends(username, ids);
   }
-
-
 }
