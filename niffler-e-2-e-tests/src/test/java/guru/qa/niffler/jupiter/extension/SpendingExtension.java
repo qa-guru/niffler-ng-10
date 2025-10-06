@@ -10,7 +10,7 @@ import org.junit.platform.commons.support.AnnotationSupport;
 
 import java.util.Date;
 
-public class CreateSpendingExtension implements BeforeEachCallback, ParameterResolver {
+public class SpendingExtension implements BeforeEachCallback, ParameterResolver {
 
   public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CreateSpendingExtension.class);
   private final SpendClient spendClient = new SpendApiClient();
