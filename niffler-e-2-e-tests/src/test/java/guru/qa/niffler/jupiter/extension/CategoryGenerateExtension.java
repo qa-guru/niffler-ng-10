@@ -36,16 +36,10 @@ public class CategoryGenerateExtension implements BeforeEachCallback, ParameterR
                                 category.username(),
                                 true
                         );
-                        created = spendApiClient.updateCategory(archivedCategory);
-                        context.getStore(NAMESPACE).put(
-                                context.getUniqueId(),
-                                created);
                     }
-
-                        context.getStore(NAMESPACE).put(
-                                context.getUniqueId(),
-                                created);
-
+                    context.getStore(NAMESPACE).put(
+                            context.getUniqueId(),
+                            created);
                 }
         );
     }
@@ -61,14 +55,12 @@ public class CategoryGenerateExtension implements BeforeEachCallback, ParameterR
     }
 
     @Override
-    public void afterTestExecution(ExtensionContext context) throws Exception {
+    public void afterTestExecution(ExtensionContext context){
 
         CategoryJson category = context.getStore(NAMESPACE).
                 get(context.getUniqueId(),
-                CategoryJson.class);
-
-
-        if (!category.archived()){
+                        CategoryJson.class);
+        if (!category.archived()) {
             CategoryJson update = new CategoryJson(
                     category.id(),
                     category.name(),
@@ -76,8 +68,6 @@ public class CategoryGenerateExtension implements BeforeEachCallback, ParameterR
                     true
             );
             spendApiClient.updateCategory(update);
-
         }
-
     }
 }

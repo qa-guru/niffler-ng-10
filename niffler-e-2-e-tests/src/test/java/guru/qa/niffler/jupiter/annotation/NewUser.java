@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@ExtendWith({UserGenerateExtension.class})
+@ExtendWith(UserGenerateExtension.class)
 public @interface NewUser {
 
 }

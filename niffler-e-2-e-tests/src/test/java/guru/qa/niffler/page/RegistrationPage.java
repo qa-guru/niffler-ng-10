@@ -20,6 +20,7 @@ public class RegistrationPage {
     private final SelenideElement errorMessageForUsernameFld = $(By.xpath("(//span[@class=\"form__error\"])[1]"));
     private final SelenideElement errorMessageForPasswordFld = $(By.xpath("(//span[@class=\"form__error\"])[2]"));
     private final SelenideElement messagePasswordsShouldBeEqual = $(By.xpath("//span[contains(text(),'Passwords should be equal')]"));
+    private final SelenideElement messageIsPasswordShort = $(By.xpath("//span[contains(text(),'Allowed password length should be from 3 to 12 characters')]"));
     //Сообщение о корректной авторизации
     private final SelenideElement messageAfterCorrectRegistration = $(By.xpath("//p[@class=\"form__paragraph form__paragraph_success\"]"));
     private final SelenideElement signInBtn = $(By.xpath("//a[@class=\"form_sign-in\"]"));
@@ -29,9 +30,7 @@ public class RegistrationPage {
         passwordField.val(password);
         submitPasswordField.val(submitPassword);
         singUpButton.click();
-        if (messageAfterCorrectRegistration.isDisplayed()) {
-            signInBtn.click();
-        }
+        signInBtn.click();
         return new LoginPage();
     }
 
@@ -40,19 +39,16 @@ public class RegistrationPage {
         passwordField.val(password);
         submitPasswordField.val(submitPassword);
         singUpButton.click();
-        if (messageAfterCorrectRegistration.isDisplayed()) {
-            signInBtn.click();
-        }
+        signInBtn.click();
         return new RegistrationPage();
     }
 
-    public RegistrationPage checkErrorLoginAndPasswordIfYouInpetShortValueMessage() {
-        usernameField.val("1");
-        passwordField.val("1");
-        submitPasswordField.val("1");
+    public RegistrationPage inputShortLogopass(String log,String pass,String confirmPass,String message) {
+        usernameField.val(log);
+        passwordField.val(pass);
+        submitPasswordField.val(confirmPass);
         singUpButton.click();
-        errorMessageForUsernameFld.shouldBe(visible);
-        errorMessageForPasswordFld.shouldBe(visible);
+        messageIsPasswordShort.shouldHave(text(message));
         return this;
     }
 
@@ -61,7 +57,7 @@ public class RegistrationPage {
         return new LoginPage();
     }
 
-    public RegistrationPage checkMessagePasswordsShouldBeequals(String message){
+    public RegistrationPage checkMessagePasswordsShouldBeequals(String message) {
         messagePasswordsShouldBeEqual.shouldHave(text(message));
         return this;
     }

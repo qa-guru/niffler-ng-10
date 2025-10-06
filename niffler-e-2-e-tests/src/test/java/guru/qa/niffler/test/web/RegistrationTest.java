@@ -10,7 +10,7 @@ import guru.qa.niffler.page.RegistrationPage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith({UserGenerateExtension.class})
+@ExtendWith(UserGenerateExtension.class)
 public class RegistrationTest {
     // Позитивные тесты
     private static final Config CFG = Config.getInstance();
@@ -39,7 +39,9 @@ public class RegistrationTest {
     public void checkMessageThenLogoPassIsShort() {
         Selenide.open(CFG.frontUrl(), LoginPage.class).
                 goToRegistration();
-        registrationTest.checkErrorLoginAndPasswordIfYouInpetShortValueMessage();
+        registrationTest.
+                inputShortLogopass("mes","1","1","Allowed password length should be from 3 to 12 characters");
+
     }
 
     @Test

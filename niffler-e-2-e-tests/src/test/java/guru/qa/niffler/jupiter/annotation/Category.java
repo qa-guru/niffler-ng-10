@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@ExtendWith({CategoryGenerateExtension.class})
+@ExtendWith(CategoryGenerateExtension.class)
 public @interface Category {
 
     String username();

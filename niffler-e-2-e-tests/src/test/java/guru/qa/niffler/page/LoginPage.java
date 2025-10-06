@@ -34,8 +34,7 @@ public class LoginPage {
     }
 
     public RegistrationPage goToRegistration() {
-        createNewAccountBtn.shouldBe(Condition.clickable)
-                .click();
+        createNewAccountBtn.click();
         return new RegistrationPage();
     }
 
