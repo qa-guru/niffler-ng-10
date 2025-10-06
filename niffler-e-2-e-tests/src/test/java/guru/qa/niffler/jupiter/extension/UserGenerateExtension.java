@@ -9,7 +9,7 @@ import java.util.Random;
 
 public class UserGenerateExtension implements BeforeEachCallback, ParameterResolver {
 
-    public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(SpendingExtension.class);
+    public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CreateSpendingExtension.class);
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
