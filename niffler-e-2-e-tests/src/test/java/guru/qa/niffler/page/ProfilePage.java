@@ -6,12 +6,12 @@ import guru.qa.niffler.model.CategoryJson;
 import org.openqa.selenium.By;
 
 import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
 
 public class ProfilePage {
     final SelenideElement showArchivedCategoriesBtn = $(By.xpath("//span[@class=\"MuiSwitch-root MuiSwitch-sizeMedium css-ecvcn9\"]"));
     final SelenideElement unarchiveCategoryBtn = $(By.xpath("(//button[@aria-label=\"Unarchive category\"])[1]"));
-    final SelenideElement archiveCategoryBtn = $(By.xpath("//span[contains(text(),'')]/../following-sibling::div/button[@aria-label=\"Archive category\"]"));
     final SelenideElement confirmeArchiveBtn = $(By.xpath("//button[contains(text(),'Archive')]"));
     final SelenideElement confirmeUnarchiveBtn = $(By.xpath("//button[contains(text(),'Unarchive')]"));
     final SelenideElement categoryFld = $("#category");
@@ -26,7 +26,7 @@ public class ProfilePage {
     }
 
     public ProfilePage archiveCategory(String category) {
-        SelenideElement archiveBtn = $(By.xpath("//span[contains(text(),'"+category+"')]/../following-sibling::div/button[@aria-label=\"Archive category\"]"));
+        SelenideElement archiveBtn = $(By.xpath("//span[contains(text(),'" + category + "')]/../following-sibling::div/button[@aria-label=\"Archive category\"]"));
         archiveBtn.click();
         confirmeArchiveBtn.click();
         return this;
@@ -34,15 +34,10 @@ public class ProfilePage {
 
     public ProfilePage unarchiveCategory(String category) {
         showArchivedCategoriesBtn.click();
-        SelenideElement unArchiveBtn = $(By.xpath("//span[contains(text(),'"+category+"')]/../following-sibling::div[@class=\"MuiBox-root css-0\"]/button[@aria-label=\"Archive category\"]"));
+        SelenideElement unArchiveBtn = $(By.xpath("//span[contains(text(),'" + category + "')]/../following-sibling::div[@class=\"MuiBox-root css-0\"]/button[@aria-label=\"Archive category\"]"));
         unarchiveCategoryBtn.click();
         confirmeUnarchiveBtn.click();
         return this;
-    }
-
-    public ProfilePage haveRightMessageAfterArchivedCategory(String message) {
-       correctArchiveMessage.shouldHave(text(message));
-       return this;
     }
 
     public ProfilePage haveRightMessageAfterUnarchiveCategory(String message) {
@@ -50,15 +45,14 @@ public class ProfilePage {
         return this;
     }
 
-    public ProfilePage archiveAllCategories() {
-        ElementsCollection allCategories = $$(By.xpath("//button[@aria-label=\"Archive category\"]"));
-
-        for (SelenideElement element : allCategories) {
-            element.click();
-            confirmeArchiveBtn.click();
-        }
+    public ProfilePage showArchiveCategories() {
+        showArchivedCategoriesBtn.click();
         return this;
     }
 
-
+    public ProfilePage findCategory(String categoryName) {
+        SelenideElement category = $(By.xpath("//span[contains(text(),'" + categoryName + "')]"));
+        category.shouldBe(visible);
+        return this;
+    }
 }

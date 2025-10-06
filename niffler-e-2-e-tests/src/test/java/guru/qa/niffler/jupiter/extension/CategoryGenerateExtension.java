@@ -40,18 +40,12 @@ public class CategoryGenerateExtension implements BeforeEachCallback, ParameterR
                         context.getStore(NAMESPACE).put(
                                 context.getUniqueId(),
                                 created);
-                    }else {
-                        CategoryJson archivedCategory = new CategoryJson(
-                                created.id(),
-                                created.name(),
-                                category.username(),
-                                false
-                        );
-                        created = spendApiClient.updateCategory(archivedCategory);
+                    }
+
                         context.getStore(NAMESPACE).put(
                                 context.getUniqueId(),
                                 created);
-                    }
+
                 }
         );
     }

@@ -27,9 +27,8 @@ public class CategoryTest {
          Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .login("mikeVasovsky_test_3.1", "1111")
                 .goToProfilePage()
-                .addNewCategory(category.name())
-                .archiveCategory(category.name())
-                .haveRightMessageAfterArchivedCategory("Category "+category.name()+" is archived");
+                 .showArchiveCategories()
+                 .findCategory(category.name());
 
     }
 
