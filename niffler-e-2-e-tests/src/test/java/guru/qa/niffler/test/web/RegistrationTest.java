@@ -3,24 +3,18 @@ package guru.qa.niffler.test.web;
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.NewUser;
-import guru.qa.niffler.jupiter.extension.CreateSpendingExtension;
-import guru.qa.niffler.jupiter.extension.SpendingResolverExtension;
 import guru.qa.niffler.jupiter.extension.UserGenerateExtension;
 import guru.qa.niffler.model.NewUserModel;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.RegistrationPage;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestClassOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
-
-import java.lang.annotation.Target;
 
 @ExtendWith({UserGenerateExtension.class})
 public class RegistrationTest {
     // Позитивные тесты
     private static final Config CFG = Config.getInstance();
-    private RegistrationPage registrationTest = new RegistrationPage();
+    private final RegistrationPage registrationTest = new RegistrationPage();
 
     @NewUser
     @Test
