@@ -44,7 +44,7 @@ public class UsersQueueExtension implements
   @Override
   public void beforeTestExecution(ExtensionContext context) {
     Arrays.stream(context.getRequiredTestMethod().getParameters())
-        .filter(p -> AnnotationSupport.isAnnotated(p, UserType.class))
+        .filter(p -> AnnotationSupport.isAnnotated(p, UserType.class) && p.getType().isAssignableFrom(StaticUser.class))
         .findFirst()
         .map(p -> p.getAnnotation(UserType.class))
         .ifPresent(ut -> {
@@ -77,10 +77,12 @@ public class UsersQueueExtension implements
         context.getUniqueId(),
         StaticUser.class
     );
-    if (user.empty()) {
-      EMPTY_USERS.add(user);
-    } else {
-      NOT_EMPTY_USERS.add(user);
+    if (user != null) {
+      if (user.empty()) {
+        EMPTY_USERS.add(user);
+      } else {
+        NOT_EMPTY_USERS.add(user);
+      }
     }
   }
 
