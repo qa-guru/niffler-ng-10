@@ -4,10 +4,8 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.web.PagedModel;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -167,12 +165,12 @@ public class SpendDbClient implements SpendClient {
   }
 
   @Override
-  public CategoryJson addCatogory(CategoryJson category) {
+  public CategoryJson addCategory(CategoryJson category) {
     return null;
   }
 
   @Override
-  public CategoryJson updateCatogory(CategoryJson categoryJson) {
+  public CategoryJson updateCategory(CategoryJson categoryJson) {
     return null;
   }
 }

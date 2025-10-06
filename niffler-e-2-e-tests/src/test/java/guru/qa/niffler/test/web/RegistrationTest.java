@@ -5,6 +5,7 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.NewUser;
 import guru.qa.niffler.jupiter.extension.CreateSpendingExtension;
 import guru.qa.niffler.jupiter.extension.SpendingResolverExtension;
+import guru.qa.niffler.jupiter.extension.UserGenerateExtension;
 import guru.qa.niffler.model.NewUserModel;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.RegistrationPage;
@@ -14,25 +15,25 @@ import org.junit.jupiter.api.TestClassOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.lang.annotation.Target;
-@ExtendWith({CreateSpendingExtension.class, SpendingResolverExtension.class})
+
+@ExtendWith({UserGenerateExtension.class})
 public class RegistrationTest {
     // Позитивные тесты
     private static final Config CFG = Config.getInstance();
     private RegistrationPage registrationTest = new RegistrationPage();
-    private LoginPage loginPage = new LoginPage();
 
     @NewUser
     @Test
-    public void checkCorrectRegistrationAndSignInSignIn(NewUserModel newUserModel){
-        Selenide.open(CFG.frontUrl(),LoginPage.class).
-        goToRegistration();
-        registrationTest.registredNewUser(newUserModel.getName(),newUserModel.getPassword(),newUserModel.getSubmitPassword()).
-        login(newUserModel.getName(),newUserModel.getPassword())
+    public void checkCorrectRegistrationAndSignInSignIn(NewUserModel newUserModel) {
+        Selenide.open(CFG.frontUrl(), LoginPage.class).
+                goToRegistration();
+        registrationTest.registredNewUser(newUserModel.getName(), newUserModel.getPassword(), newUserModel.getSubmitPassword()).
+                login(newUserModel.getName(), newUserModel.getPassword())
                 .checkThatPageLoaded();
     }
 
     @Test
-    public void checkNavigateToLoginPageAfterClickToLinkInTheRegistrationPage(){
+    public void checkNavigateToLoginPageAfterClickToLinkInTheRegistrationPage() {
         Selenide.open(CFG.frontUrl(), LoginPage.class).
                 goToRegistration().
                 backToLoginPageFromRegistrationPage().
@@ -41,30 +42,24 @@ public class RegistrationTest {
 
     //Негативные тесты
     @Test
-    public void checkMessageThenLogoPassIsShort(){
-        Selenide.open(CFG.frontUrl(),LoginPage.class).
+    public void checkMessageThenLogoPassIsShort() {
+        Selenide.open(CFG.frontUrl(), LoginPage.class).
                 goToRegistration();
         registrationTest.checkErrorLoginAndPasswordIfYouInpetShortValueMessage();
-
-        Assertions.assertTrue(registrationTest.getErrorMessageForUsernameFld().isDisplayed());
-        Assertions.assertTrue(registrationTest.getErrorMessageForPasswordFld().isDisplayed());
     }
+
     @Test
-    public void checkMessageAfterIncorrectLogin(){
-        String expectedMessage = "Неверные учетные данные пользователя";
+    public void checkMessageAfterIncorrectLogin() {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .incorrectLogin("12","22");
-        Assertions.assertEquals(expectedMessage,loginPage.getTextFromMessage(loginPage.getMessageAfterIncorrectAuth()));
+                .incorrectLogin("12", "22")
+                .checkThatErrorMessageEqual("Неверные учетные данные пользователя");
     }
+
     @Test
-    public void getTextAfterIncorrectPassAndConfirmPass(){
-        String expectedMessage = "Passwords should be equal";
-        Selenide.open(CFG.frontUrl(),LoginPage.class)
+    public void getTextAfterIncorrectPassAndConfirmPass() {
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .goToRegistration()
-                .registredNewUser("user","2222","3333");
-        Assertions.assertEquals(expectedMessage,registrationTest.getTextFromElement(registrationTest.getMessagePasswordsShouldBeEqual()));
-
+                .incorrectRegistredNewUser("user", "2222", "3333")
+                .checkMessagePasswordsShouldBeequals("Passwords should be equal");
     }
-
-
 }

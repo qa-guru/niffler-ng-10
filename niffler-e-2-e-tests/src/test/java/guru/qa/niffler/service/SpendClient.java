@@ -34,7 +34,8 @@ public interface SpendClient {
 
   List<CategoryJson> getCategories(String username, boolean excludeArchived);
 
-  CategoryJson addCatogory(CategoryJson category);
+  CategoryJson addCategory(CategoryJson category);
 
-  CategoryJson updateCatogory(CategoryJson categoryJson);
+
+  CategoryJson updateCategory(CategoryJson categoryJson);
 }

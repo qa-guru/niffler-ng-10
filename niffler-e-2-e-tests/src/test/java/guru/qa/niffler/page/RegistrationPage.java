@@ -1,6 +1,5 @@
 package guru.qa.niffler.page;
 
-import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 import lombok.Getter;
 import org.openqa.selenium.By;
@@ -25,33 +24,46 @@ public class RegistrationPage {
     private final SelenideElement messageAfterCorrectRegistration = $(By.xpath("//p[@class=\"form__paragraph form__paragraph_success\"]"));
     private final SelenideElement signInBtn = $(By.xpath("//a[@class=\"form_sign-in\"]"));
 
-    public  LoginPage registredNewUser(String userName, String password, String submitPassword){
-        usernameField.shouldBe(clickable).val(userName);
-        passwordField.shouldBe(clickable).val(password);
-        submitPasswordField.shouldBe(clickable).val(submitPassword);
-        singUpButton.shouldBe(clickable).click();
-        if (messageAfterCorrectRegistration.isDisplayed()){
-            signInBtn.shouldBe(clickable).click();
+    public LoginPage registredNewUser(String userName, String password, String submitPassword) {
+        usernameField.val(userName);
+        passwordField.val(password);
+        submitPasswordField.val(submitPassword);
+        singUpButton.click();
+        if (messageAfterCorrectRegistration.isDisplayed()) {
+            signInBtn.click();
         }
         return new LoginPage();
     }
 
+    public RegistrationPage incorrectRegistredNewUser(String userName, String password, String submitPassword) {
+        usernameField.val(userName);
+        passwordField.val(password);
+        submitPasswordField.val(submitPassword);
+        singUpButton.click();
+        if (messageAfterCorrectRegistration.isDisplayed()) {
+            signInBtn.click();
+        }
+        return new RegistrationPage();
+    }
+
     public RegistrationPage checkErrorLoginAndPasswordIfYouInpetShortValueMessage() {
-        usernameField.shouldBe(clickable).val("1");
-        passwordField.shouldBe(clickable).val("1");
-        submitPasswordField.shouldBe(clickable).val("1");
-        singUpButton.shouldBe(clickable).click();
+        usernameField.val("1");
+        passwordField.val("1");
+        submitPasswordField.val("1");
+        singUpButton.click();
+        errorMessageForUsernameFld.shouldBe(visible);
+        errorMessageForPasswordFld.shouldBe(visible);
         return this;
     }
 
-    public LoginPage backToLoginPageFromRegistrationPage(){
-        backToLoginPage.shouldBe(clickable).click();
+    public LoginPage backToLoginPageFromRegistrationPage() {
+        backToLoginPage.click();
         return new LoginPage();
     }
 
-    public String getTextFromElement(SelenideElement element){
-        return element.getText();
+    public RegistrationPage checkMessagePasswordsShouldBeequals(String message){
+        messagePasswordsShouldBeEqual.shouldHave(text(message));
+        return this;
     }
-
 
 }

@@ -2,7 +2,6 @@ package guru.qa.niffler.jupiter.annotation;
 
 
 import guru.qa.niffler.jupiter.extension.CategoryGenerateExtension;
-import guru.qa.niffler.jupiter.extension.CategoryGenerateResolverExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.lang.annotation.ElementType;
@@ -12,8 +11,11 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@ExtendWith({CategoryGenerateExtension.class, CategoryGenerateResolverExtension.class})
-public @interface NewCategory {
+@ExtendWith({CategoryGenerateExtension.class})
+public @interface Category {
+
+    String username();
+    boolean archived();
 
 
 }
