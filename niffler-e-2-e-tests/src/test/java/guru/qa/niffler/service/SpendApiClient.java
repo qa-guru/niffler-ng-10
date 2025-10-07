@@ -5,7 +5,6 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
-import lombok.SneakyThrows;
 import org.hibernate.AssertionFailure;
 import retrofit2.Response;
 import retrofit2.Retrofit;

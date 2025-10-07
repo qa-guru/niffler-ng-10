@@ -4,6 +4,7 @@ import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.Spending;
+import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
@@ -20,12 +21,14 @@ public class SpendingTest {
 
     private static final Config CFG = Config.getInstance();
 
-    @Spending(
+    @User(
             username = "duck",
-            category = "Учеба",
-            amount = 89900,
-            currency = CurrencyValues.RUB,
-            description = "Обучение Niffler 2.0 юбилейный поток!"
+            spendings = @Spending(
+                    category = "Учеба",
+                    amount = 89900,
+                    currency = CurrencyValues.RUB,
+                    description = "Обучение Niffler 2.0 юбилейный поток!"
+            )
     )
     @Test
     void spendingDescriptionShouldBeEditedByTableAction(SpendJson spending) {
@@ -40,9 +43,9 @@ public class SpendingTest {
                 .checkThatTableContains(newDescription);
     }
 
-    @Category(
+    @User(
             username = "testtest",
-            archived = false
+            categories = @Category(archived = false)
     )
     @Test
     void categoryShouldBeArchived(CategoryJson categoryJson) throws IOException {
@@ -53,9 +56,9 @@ public class SpendingTest {
                 .checkArchivedCategory(categoryJson.name());
     }
 
-    @Category(
+    @User(
             username = "testtest",
-            archived = true
+            categories = @Category(archived = true)
     )
     @Test
     void categoryShouldNotBeArchived(CategoryJson categoryJson) throws IOException {

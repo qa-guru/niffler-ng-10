@@ -6,13 +6,13 @@ import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
 import guru.qa.niffler.service.AuthApiClient;
+import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import retrofit2.Response;
 
 import java.io.IOException;
-import java.util.concurrent.ThreadLocalRandom;
 
 @ExtendWith(BrowserExtension.class)
 public class RegisterTest {
@@ -22,8 +22,8 @@ public class RegisterTest {
 
     @Test
     void shouldRegisterNewUser() {
-        String username = "test" + ThreadLocalRandom.current().nextInt(1, 101);
-        String password = "pwd" + ThreadLocalRandom.current().nextInt(1, 101);
+        String username = RandomDataUtils.randomUsername();
+        String password = RandomDataUtils.randomUsername();
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .goToRegisterPage()
                 .setUsername(username)
@@ -42,8 +42,8 @@ public class RegisterTest {
 
     @Test
     void shouldNotRegisterExistingUser() throws IOException {
-        String username = "test" + ThreadLocalRandom.current().nextInt(1, 101);
-        String password = "pwd" + ThreadLocalRandom.current().nextInt(1, 101);
+        String username = RandomDataUtils.randomUsername();
+        String password = RandomDataUtils.randomUsername();
         final Response<Void> response = authApiClient.register(username, password);
         Assertions.assertEquals(201, response.code());
         Selenide.open(CFG.frontUrl(), LoginPage.class)
@@ -57,7 +57,7 @@ public class RegisterTest {
 
     @Test
     void shouldShowErrorIfPasswordAndSubmittedPasswordNotEqual() {
-        String username = "test" + ThreadLocalRandom.current().nextInt(1, 101);
+        String username = RandomDataUtils.randomUsername();
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .goToRegisterPage()
                 .setUsername(username)

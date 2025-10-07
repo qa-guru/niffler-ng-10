@@ -1,14 +1,14 @@
 package guru.qa.niffler.jupiter.extension;
 
 import guru.qa.niffler.jupiter.annotation.Category;
+import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.service.SpendApiClient;
+import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
-import java.io.IOException;
 import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class CategoryExtension implements BeforeEachCallback, ParameterResolver, AfterTestExecutionCallback {
 
@@ -19,32 +19,37 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
     public void beforeEach(ExtensionContext context) throws Exception {
         AnnotationSupport.findAnnotation(
                 context.getRequiredTestMethod(),
-                Category.class
-        ).ifPresent(anno -> {
-            CategoryJson createdCategory = spendClient.createCategory(
-                    new CategoryJson(
-                            UUID.randomUUID(),
-                            "category" + ThreadLocalRandom.current().nextInt(1, 101),
-                            anno.username(),
-                            false
-                    )
-            );
+                User.class
+        ).ifPresent(userAnno -> {
+            Category[] categories = userAnno.categories();
+            if (categories.length > 0) {
+                Category anno = categories[0];
 
-            if (anno.archived()) {
-                createdCategory = spendClient.updateCategory(
+                CategoryJson createdCategory = spendClient.createCategory(
                         new CategoryJson(
-                                createdCategory.id(),
-                                createdCategory.name(),
-                                createdCategory.username(),
-                                true
+                                UUID.randomUUID(),
+                                RandomDataUtils.randomCategoryName(),
+                                userAnno.username(),
+                                false
                         )
                 );
-            }
 
-            context.getStore(NAMESPACE).put(
-                    context.getUniqueId(),
-                    createdCategory
-            );
+                if (anno.archived()) {
+                    createdCategory = spendClient.updateCategory(
+                            new CategoryJson(
+                                    createdCategory.id(),
+                                    createdCategory.name(),
+                                    userAnno.username(),
+                                    true
+                            )
+                    );
+                }
+
+                context.getStore(NAMESPACE).put(
+                        context.getUniqueId(),
+                        createdCategory
+                );
+            }
         });
     }
 
@@ -61,7 +66,7 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
     @Override
     public void afterTestExecution(ExtensionContext context) throws Exception {
         CategoryJson categoryJson = context.getStore(CategoryExtension.NAMESPACE).get(context.getUniqueId(), CategoryJson.class);
-        if (!categoryJson.archived()) {
+        if (categoryJson != null && !categoryJson.archived()) {
             spendClient.updateCategory(new CategoryJson(
                     categoryJson.id(),
                     categoryJson.name(),

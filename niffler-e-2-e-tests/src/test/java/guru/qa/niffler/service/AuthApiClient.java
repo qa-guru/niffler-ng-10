@@ -1,6 +1,7 @@
 package guru.qa.niffler.service;
 
 import guru.qa.niffler.api.AuthApi;
+import guru.qa.niffler.config.Config;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import retrofit2.Response;
@@ -13,10 +14,11 @@ import java.net.CookiePolicy;
 
 public class AuthApiClient {
 
+  private static final Config CFG = Config.getInstance();
   private static final CookieManager cm = new CookieManager(null, CookiePolicy.ACCEPT_ALL);
 
   private final Retrofit retrofit = new Retrofit.Builder()
-      .baseUrl("http://localhost:9000/")
+      .baseUrl(CFG.authUrl())
       .addConverterFactory(JacksonConverterFactory.create())
       .client(new OkHttpClient.Builder()
           .cookieJar(new JavaNetCookieJar(
