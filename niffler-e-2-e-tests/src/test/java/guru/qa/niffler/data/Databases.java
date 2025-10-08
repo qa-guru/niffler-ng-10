@@ -14,9 +14,9 @@ public class Databases {
 
     private static final Map<String, DataSource> dataSources = new ConcurrentHashMap<>();
 
-    private static DataSource dataSource(String jdcUrl) {
+    private static DataSource dataSource(String jdbcUrl) {
         return dataSources.computeIfAbsent(
-                jdcUrl,
+                jdbcUrl,
                 key -> {
                     PGSimpleDataSource ds = new PGSimpleDataSource();
                     ds.setUser("postgres");
