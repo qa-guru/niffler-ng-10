@@ -6,6 +6,8 @@ import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
 
+import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
+
 @WebTest
 public class LoginTest {
 
@@ -14,7 +16,14 @@ public class LoginTest {
   @Test
   void mainPageShouldBeDisplayedAfterSuccessLogin() {
     Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .login("duck", "12345")
+        .successLogin("duck", "12345")
         .checkThatPageLoaded();
+  }
+
+  @Test
+  void userShouldStayOnLoginPageAfterLoginWithBadCredentials() {
+    LoginPage loginPage = Selenide.open(CFG.frontUrl(), LoginPage.class);
+    loginPage.fillLoginPage(randomUsername(), "BAD");
+    loginPage.checkError("Bad credentials");
   }
 }

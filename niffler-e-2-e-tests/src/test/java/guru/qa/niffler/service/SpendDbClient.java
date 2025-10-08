@@ -3,14 +3,15 @@ package guru.qa.niffler.service;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
-import java.sql.*;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -96,6 +97,31 @@ public class SpendDbClient implements SpendClient {
           category.username(),
           false
       );
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public CategoryJson updateCategory(CategoryJson category) {
+    try {
+      final JdbcTemplate jdbcTemplate = new JdbcTemplate(
+          new SingleConnectionDataSource(
+              DriverManager.getConnection(
+                  CFG.spendJdbcUrl(),
+                  "postgres",
+                  "secret"
+              ),
+              true
+          )
+      );
+
+      jdbcTemplate.update("UPDATE \"category\" SET name = ?, archived = ? WHERE id = ?",
+          category.name(),
+          category.archived(),
+          category.id()
+      );
+      return category;
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
