@@ -27,10 +27,10 @@ public class UsersQueueExtension implements
 
 
     static {
-        EMPTY.add(new StaticUser("emty_friend_acc", "111", UserType.Type.EMPTY));
-        WITH_FRIEND.add(new StaticUser("duck", "12345", UserType.Type.WHITH_FRIEND));
-        WITH_INCOME_REQUEST.add(new StaticUser("dima", "12345", UserType.Type.WHITH_INCOME_REQUEST));
-        WITH_OUTCOME_REQUEST.add(new StaticUser("dima", "12345", UserType.Type.WITH_OUTCOME_REQUEST));
+        EMPTY.add(new StaticUser("empty_user_hm", "111", UserType.Type.EMPTY));
+        WITH_FRIEND.add(new StaticUser("user_with_friend", "111", UserType.Type.WITH_FRIEND));
+        WITH_INCOME_REQUEST.add(new StaticUser("income_req_user", "111", UserType.Type.WITH_INCOME_REQUEST));
+        WITH_OUTCOME_REQUEST.add(new StaticUser("outcome_req_user", "111", UserType.Type.WITH_OUTCOME_REQUEST));
     }
 
     private StaticUser getUser(UserType.Type type) {
@@ -38,10 +38,10 @@ public class UsersQueueExtension implements
             case EMPTY -> {
                 return EMPTY.poll();
             }
-            case WHITH_FRIEND -> {
+            case WITH_FRIEND -> {
                 return WITH_FRIEND.poll();
             }
-            case WHITH_INCOME_REQUEST -> {
+            case WITH_INCOME_REQUEST -> {
                 return WITH_INCOME_REQUEST.poll();
             }
             case WITH_OUTCOME_REQUEST -> {
@@ -53,7 +53,6 @@ public class UsersQueueExtension implements
 
         }
     }
-
 
     @Override
     public void beforeTestExecution(ExtensionContext context) {
@@ -92,13 +91,13 @@ public class UsersQueueExtension implements
             if (e.getKey() == UserType.Type.EMPTY) {
                 EMPTY.add(e.getValue());
             }
-            if (e.getKey() == UserType.Type.WHITH_FRIEND) {
+            if (e.getKey() == UserType.Type.WITH_FRIEND) {
                 WITH_FRIEND.add(e.getValue());
             }
             if (e.getKey() == UserType.Type.WITH_OUTCOME_REQUEST) {
                 WITH_OUTCOME_REQUEST.add(e.getValue());
             }
-            if (e.getKey() == UserType.Type.WHITH_INCOME_REQUEST) {
+            if (e.getKey() == UserType.Type.WITH_INCOME_REQUEST) {
                 WITH_INCOME_REQUEST.add(e.getValue());
             }
         }
