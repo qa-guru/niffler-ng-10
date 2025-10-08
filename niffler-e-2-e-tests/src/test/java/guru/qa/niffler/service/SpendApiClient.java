@@ -12,7 +12,6 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -126,10 +125,5 @@ public class SpendApiClient implements SpendClient{
     }
     assertEquals(200, response.code());
     return response.body();
-  }
-
-  @Override
-  public Optional<CategoryJson> findCategoryByNameAndUsername(String categoryName, String username) {
-    throw new UnsupportedOperationException("Not implemented :(");
   }
 }
