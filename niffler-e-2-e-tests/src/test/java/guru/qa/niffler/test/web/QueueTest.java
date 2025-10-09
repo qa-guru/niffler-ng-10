@@ -4,56 +4,51 @@ package guru.qa.niffler.test.web;
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.UserType;
+import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.jupiter.extension.UsersQueueExtension;
 import guru.qa.niffler.page.LoginPage;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import static guru.qa.niffler.jupiter.annotation.UserType.*;
 import static guru.qa.niffler.jupiter.annotation.UserType.Type.*;
 import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@ExtendWith(UsersQueueExtension.class)
+@ExtendWith({UsersQueueExtension.class, BrowserExtension.class})
 public class QueueTest {
     private static final Config CFG = Config.getInstance();
 
     @Test
-    public void incomeRequestTest(@UserType(empty = WITH_INCOME_REQUEST) StaticUser user) {
+    public void incomeRequestTest(@UserType(userType = WITH_INCOME_REQUEST) StaticUser user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .login(user.username(), user.password())
                 .checkThatPageLoaded()
                 .goToFriendsPage()
-                .shouldPageHaveBtn();
+                .checkThatIncomeInviteExist(user.income());
     }
 
     @Test
-    public void friendRequestTest(@UserType(empty = WITH_FRIEND) StaticUser user) {
+    public void friendRequestTest(@UserType(userType = WITH_FRIEND) StaticUser user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .login(user.username(), user.password())
                 .checkThatPageLoaded()
                 .goToFriendsPage()
-                .checkPageHaveUnFriendBtn();
+                .checkThatFriendExist(user.friend());
     }
 
-    ;
-
     @Test
-    public void emptyUserTest(@UserType(empty = EMPTY) StaticUser user) {
-        boolean result = Selenide.open(CFG.frontUrl(), LoginPage.class)
+    public void emptyUserTest(@UserType(userType = EMPTY) StaticUser user) {
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .login(user.username(), user.password())
                 .checkThatPageLoaded()
                 .goToFriendsPage()
-                .checkFriendsIfUserIsEmpty();
-        assertTrue(result);
+                .checkThatFriendsListIsEmpty();
     }
 
     @Test
-    public void outcomeRequestTest(@UserType(empty = WITH_OUTCOME_REQUEST) StaticUser user) {
+    public void outcomeRequestTest(@UserType(userType = WITH_OUTCOME_REQUEST) StaticUser user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .login(user.username(), user.password())
                 .goToAllPeoplePage()
-                .checkPageHaveWaitingBtn();
+                .checkOutcomeRequest(user.outcome());
     }
 }

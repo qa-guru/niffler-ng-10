@@ -8,10 +8,10 @@ import java.lang.annotation.Target;
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UserType {
-    Type empty() default Type.EMPTY;
+    Type userType() default Type.EMPTY;
 
-    enum Type{
-        EMPTY, WITH_FRIEND, WITH_INCOME_REQUEST,WITH_OUTCOME_REQUEST
+    enum Type {
+        EMPTY, WITH_FRIEND, WITH_INCOME_REQUEST, WITH_OUTCOME_REQUEST
     }
 
 }

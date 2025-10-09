@@ -1,10 +1,7 @@
 package guru.qa.niffler.page;
 
-import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
-import guru.qa.niffler.model.CategoryJson;
 import org.openqa.selenium.By;
-
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
@@ -15,10 +12,7 @@ public class ProfilePage {
     final SelenideElement confirmeArchiveBtn = $(By.xpath("//button[contains(text(),'Archive')]"));
     final SelenideElement confirmeUnarchiveBtn = $(By.xpath("//button[contains(text(),'Unarchive')]"));
     final SelenideElement categoryFld = $("#category");
-    final SelenideElement correctArchiveMessage = $(By.xpath("//div[contains(text(),'is archived')]"));
-
     final SelenideElement correctUnarchiveMessage = $(By.xpath("//div[contains(text(),'is unarchived')]"));
-
 
     public ProfilePage addNewCategory(String name) {
         categoryFld.val(name).pressEnter();
