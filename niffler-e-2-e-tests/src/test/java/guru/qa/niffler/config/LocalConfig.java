@@ -22,4 +22,7 @@ package guru.qa.niffler.config;
   public String githubUrl() {
    return "https://api.github.com/";
   }
+
+  @Override
+  public String gatewayUrl(){return "http://localhost:8090";}
  }
