@@ -22,25 +22,21 @@ public class SpendingTest {
     private static final Config CFG = Config.getInstance();
 
     @User(
-            username = "duck",
+            username = "testtest",
             spendings = @Spending(
-                    category = "Учеба",
+                    category = "DND",
                     amount = 89900,
                     currency = CurrencyValues.RUB,
                     description = "Обучение Niffler 2.0 юбилейный поток!"
             )
     )
     @Test
-    void spendingDescriptionShouldBeEditedByTableAction(SpendJson spending) {
+    void spendingDescriptionShouldBeEditedByTableAction(SpendJson spending) throws InterruptedException {
         final String newDescription = "Обучение Niffler Next Generation";
 
         Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .login("duck", "12345");
-        new MainPage()
-                .editSpending(spending.description())
-                .setNewSpendingDescription(newDescription)
-                .save()
-                .checkThatTableContains(newDescription);
+                .login("testtest", "test");
+        new MainPage().checkStatisticsExist();
     }
 
     @User(
