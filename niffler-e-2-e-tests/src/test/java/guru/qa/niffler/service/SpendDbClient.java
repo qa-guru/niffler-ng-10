@@ -2,15 +2,17 @@ package guru.qa.niffler.service;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
-import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.web.PagedModel;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import java.sql.*;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -130,5 +132,45 @@ public class SpendDbClient implements SpendClient {
     } catch (Exception e) {
       return Optional.empty();
     }
+  }
+
+  @Override
+  public SpendJson getUserById(String id, String userName) {
+    return null;
+  }
+
+  @Override
+  public List<SpendJson> getSpends(String username, CurrencyValues filterCurrency, Date from, Date to) {
+    return List.of();
+  }
+
+  @Override
+  public SpendJson editSpend(SpendJson spend) {
+    return null;
+  }
+
+  @Override
+  public Void deleteSpends(String username, List<String> ids) {
+    return null;
+  }
+
+  @Override
+  public PagedModel<SpendJson> getspends(String username, CurrencyValues filterCurrency, Date from, Date to, String searchQuery, Integer page, Integer size, List<String> sort) {
+    return null;
+  }
+
+  @Override
+  public List<CategoryJson> getCategories(String username, boolean excludeArchived) {
+    return List.of();
+  }
+
+  @Override
+  public CategoryJson addCategory(CategoryJson category) {
+    return null;
+  }
+
+  @Override
+  public CategoryJson updateCategory(CategoryJson categoryJson) {
+    return null;
   }
 }
