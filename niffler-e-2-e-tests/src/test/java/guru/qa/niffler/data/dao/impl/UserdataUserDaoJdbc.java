@@ -14,31 +14,36 @@ public class UserdataUserDaoJdbc implements UserdataUserDao {
 
     private static final Config CFG = Config.getInstance();
 
+    private final Connection connection;
+
+    public UserdataUserDaoJdbc(Connection connection) {
+        this.connection = connection;
+    }
+
     @Override
     public UserEntity createUser(UserEntity user) {
-        try (Connection connection = Databases.connection(CFG.userdataJdbcUrl())) {
-            try (PreparedStatement ps = connection.prepareStatement(
-                    "INSERT INTO user (username, currency, firstname, surname, full_name, photo, photo_small) " +
-                            "VALUES (?, ?, ?, ?, ?, ?, ?)",
-                    Statement.RETURN_GENERATED_KEYS)) {
-                ps.setString(1, user.getUsername());
-                ps.setString(2, user.getCurrency().name());
-                ps.setString(3, user.getFirstname());
-                ps.setString(4, user.getSurname());
-                ps.setString(5, user.getFullname());
-                ps.setBytes(6, user.getPhoto());
-                ps.setBytes(7, user.getPhotoSmall());
+        try (PreparedStatement ps = connection.prepareStatement(
+                "INSERT INTO user (username, currency, firstname, surname, full_name, photo, photo_small) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?)",
+                Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, user.getUsername());
+            ps.setString(2, user.getCurrency().name());
+            ps.setString(3, user.getFirstname());
+            ps.setString(4, user.getSurname());
+            ps.setString(5, user.getFullname());
+            ps.setBytes(6, user.getPhoto());
+            ps.setBytes(7, user.getPhotoSmall());
 
-                ps.executeUpdate();
+            ps.executeUpdate();
 
-                final UUID generatedKey;
-                try (ResultSet rs = ps.getGeneratedKeys()) {
-                    if (rs.next()) {
-                        generatedKey = rs.getObject("id", UUID.class);
-                    } else {
-                        throw new SQLException("Can't find id in ResultSet");
-                    }
+            final UUID generatedKey;
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    generatedKey = rs.getObject("id", UUID.class);
+                } else {
+                    throw new SQLException("Can't find id in ResultSet");
                 }
+
                 user.setId(generatedKey);
                 return user;
             }
@@ -49,19 +54,18 @@ public class UserdataUserDaoJdbc implements UserdataUserDao {
 
     @Override
     public Optional<UserEntity> findById(UUID id) {
-        try (Connection connection = Databases.connection(CFG.userdataJdbcUrl())) {
-            try (PreparedStatement ps = connection.prepareStatement(
-                    "SELECT * FROM user WHERE id = ?")) {
-                ps.setObject(1, id);
+        try (PreparedStatement ps = connection.prepareStatement(
+                "SELECT * FROM user WHERE id = ?")) {
+            ps.setObject(1, id);
 
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        return Optional.of(mapUser(rs));
-                    } else {
-                        return Optional.empty();
-                    }
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(mapUser(rs));
+                } else {
+                    return Optional.empty();
                 }
             }
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -69,19 +73,18 @@ public class UserdataUserDaoJdbc implements UserdataUserDao {
 
     @Override
     public Optional<UserEntity> findByUsername(String username) {
-        try (Connection connection = Databases.connection(CFG.userdataJdbcUrl())) {
-            try (PreparedStatement ps = connection.prepareStatement(
-                    "SELECT * FROM user WHERE username = ?")) {
-                ps.setString(1, username);
+        try (PreparedStatement ps = connection.prepareStatement(
+                "SELECT * FROM user WHERE username = ?")) {
+            ps.setString(1, username);
 
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        return Optional.of(mapUser(rs));
-                    } else {
-                        return Optional.empty();
-                    }
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(mapUser(rs));
+                } else {
+                    return Optional.empty();
                 }
             }
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -89,12 +92,11 @@ public class UserdataUserDaoJdbc implements UserdataUserDao {
 
     @Override
     public void delete(UserEntity user) {
-        try (Connection connection = Databases.connection(CFG.userdataJdbcUrl())) {
-            try (PreparedStatement ps = connection.prepareStatement(
-                    "DELETE FROM user WHERE id = ?")) {
-                ps.setObject(1, user.getId());
-                ps.executeUpdate();
-            }
+        try (PreparedStatement ps = connection.prepareStatement(
+                "DELETE FROM user WHERE id = ?")) {
+            ps.setObject(1, user.getId());
+            ps.executeUpdate();
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
