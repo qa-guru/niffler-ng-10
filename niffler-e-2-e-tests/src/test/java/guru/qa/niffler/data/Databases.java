@@ -1,10 +1,10 @@
 package guru.qa.niffler.data;
 
 import com.atomikos.icatch.jta.UserTransactionImp;
+import com.atomikos.jdbc.AtomikosDataSourceBean;
 import jakarta.transaction.SystemException;
 import jakarta.transaction.UserTransaction;
-import lombok.val;
-import org.postgresql.ds.PGSimpleDataSource;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -15,9 +15,6 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
-
-import com.atomikos.jdbc.AtomikosDataSourceBean;
-import org.apache.commons.lang3.StringUtils;
 
 
 public class Databases {
@@ -34,9 +31,14 @@ public class Databases {
     }
 
     public static <T> T transaction(Function<Connection, T> function, String jdbcUrl) {
+        return transaction(function, jdbcUrl, Connection.TRANSACTION_READ_COMMITTED);
+    }
+
+    public static <T> T transaction(Function<Connection, T> function, String jdbcUrl, int isolationLevel) {
         Connection connection = null;
         try {
             connection = connection(jdbcUrl);
+            connection.setTransactionIsolation(isolationLevel);
             connection.setAutoCommit(false);
             T result = function.apply(connection);
             connection.commit();
@@ -57,12 +59,19 @@ public class Databases {
 
     @SafeVarargs
     public static <T> T xaTransaction(XaFunction<T>... actions) {
+        return xaTransaction(Connection.TRANSACTION_READ_COMMITTED, actions);
+    }
+
+    @SafeVarargs
+    public static <T> T xaTransaction(int isolationLevel, XaFunction<T>... actions) {
         UserTransaction ut = new UserTransactionImp();
         try {
             ut.begin();
             T result = null;
             for (XaFunction<T> action : actions) {
-                result = action.function.apply(connection(action.jdbcUrl));
+                Connection conn = connection(action.jdbcUrl);
+                conn.setTransactionIsolation(isolationLevel);
+                result = action.function.apply(conn);
             }
             ut.commit();
             return result;
@@ -78,9 +87,14 @@ public class Databases {
 
 
     public static void transaction(Consumer<Connection> consumer, String jdbcUrl) {
+        transaction(consumer, jdbcUrl, Connection.TRANSACTION_READ_COMMITTED);
+    }
+
+    public static void transaction(Consumer<Connection> consumer, String jdbcUrl, int isolationLevel) {
         Connection connection = null;
         try {
             connection = connection(jdbcUrl);
+            connection.setTransactionIsolation(isolationLevel);
             connection.setAutoCommit(false);
             consumer.accept(connection);
             connection.commit();
@@ -99,11 +113,17 @@ public class Databases {
     }
 
     public static void xaTransaction(XaConsumer... actions) {
+        xaTransaction(Connection.TRANSACTION_READ_COMMITTED, actions);
+    }
+
+    public static void xaTransaction(int isolationLevel, XaConsumer... actions) {
         UserTransaction ut = new UserTransactionImp();
         try {
             ut.begin();
             for (XaConsumer action : actions) {
-                action.function.accept(connection(action.jdbcUrl));
+                Connection conn = connection(action.jdbcUrl);
+                conn.setTransactionIsolation(isolationLevel);
+                action.function.accept(conn);
             }
             ut.commit();
         } catch (Exception e) {

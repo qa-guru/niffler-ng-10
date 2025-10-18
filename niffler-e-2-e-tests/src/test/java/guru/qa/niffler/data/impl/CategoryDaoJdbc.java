@@ -1,4 +1,4 @@
-package guru.qa.niffler.data.dao.impl;
+package guru.qa.niffler.data.impl;
 
 import guru.qa.niffler.data.dao.CategoryDao;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
@@ -16,7 +16,6 @@ public class CategoryDaoJdbc implements CategoryDao {
     public CategoryDaoJdbc(Connection connection) {
         this.connection = connection;
     }
-
 
     @Override
     public CategoryEntity create(CategoryEntity category) {
