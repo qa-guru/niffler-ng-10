@@ -19,7 +19,7 @@ public class ProfilePage {
             userNameField = $("#username"),
             nameOfUserNameField = $("#name"),
             categoryField = $("#category"),
-            toggleShowArchived = $(".PrivateSwitchBase-input"),
+            toggleShowArchived = $(".MuiSwitch-input"),
             makeCategoryArchiveButton = $("[aria-label=Archive category]"),
             confirmButtonToMakeCategoryArchive = $$("[type=button]").findBy(text("Archive")),
             EditCategoryButton = $("[aria-label=Edit category]");

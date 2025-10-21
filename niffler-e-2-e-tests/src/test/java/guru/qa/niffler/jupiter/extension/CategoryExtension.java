@@ -25,7 +25,6 @@ public class CategoryExtension implements BeforeEachCallback, AfterTestExecution
                                     annotation.username(),
                                     annotation.archived() //дефолтное значение false
                             );
-                            System.out.println("Создаю новую категорию " + newCategory.name());
                             CategoryJson created = spendClient.createCategory(newCategory);
                             if (annotation.archived()) {
                                 CategoryJson archivedCategory = new CategoryJson(
@@ -44,7 +43,6 @@ public class CategoryExtension implements BeforeEachCallback, AfterTestExecution
     @Override
     public void afterTestExecution(ExtensionContext context) throws Exception {
         CategoryJson category = context.getStore(NAMESPACE).get(context.getUniqueId(), CategoryJson.class);
-        System.out.println("После теста не архивную в архивную хочу");
         if (!category.archived()) {
             category = new CategoryJson(
                     category.id(),
@@ -52,7 +50,6 @@ public class CategoryExtension implements BeforeEachCallback, AfterTestExecution
                     category.username(),
                     true
             );
-            System.out.println("в ИФе в архивную хочу");
             spendClient.updateCategory(category);
         }
     }

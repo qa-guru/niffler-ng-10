@@ -22,7 +22,7 @@ public class ProfileTest {
     void setUp() {
         loginPage = Selenide.open(CFG.frontUrl(), LoginPage.class);
         loginPage.login(userLogin, userPassword);
-
+        mainPage.goToProfilePage();
     }
 
     @Category(
@@ -38,9 +38,8 @@ public class ProfileTest {
             archived = true)
     @Test
     void archivedCategoryShouldNotBePresentedInActiveCategoryList(CategoryJson category) {
-        mainPage.goToProfilePage();
-//    profilePage.showActiveAndArchivedCategoriesList();
-//    profilePage.checkArchiveCategoryIsDisplayed(category.name());
+    profilePage.showActiveAndArchivedCategoriesList();
+    profilePage.checkArchiveCategoryIsDisplayed(category.name());
 
     }
 
