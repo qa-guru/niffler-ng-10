@@ -11,7 +11,7 @@ import static guru.qa.niffler.util.DataUtil.getRandomCategory;
 
 public class CategoryExtension implements BeforeEachCallback, AfterTestExecutionCallback, ParameterResolver {
 
-    public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CreateSpendingExtension.class);
+    public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(SpendingExtension.class);
 
     private final SpendClient spendClient = new SpendApiClient();
 
