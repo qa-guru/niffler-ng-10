@@ -95,4 +95,39 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
       throw new RuntimeException(e);
     }
   }
+
+  @Override
+  public Optional<AuthUserEntity> findByUsername(String username) {
+    try (PreparedStatement ps = holder(URL).connection().prepareStatement(
+        "select * from \"user\" u join authority a on u.id = a.user_id where u.username = ?"
+    )) {
+      ps.setString(1, username);
+
+      ps.execute();
+
+      try (ResultSet rs = ps.getResultSet()) {
+        AuthUserEntity user = null;
+        List<AuthorityEntity> authorityEntities = new ArrayList<>();
+        while (rs.next()) {
+          if (user == null) {
+            user = AuthUserEntityRowMapper.instance.mapRow(rs, 1);
+          }
+
+          AuthorityEntity ae = new AuthorityEntity();
+          ae.setUser(user);
+          ae.setId(rs.getObject("a.id", UUID.class));
+          ae.setAuthority(Authority.valueOf(rs.getString("authority")));
+          authorityEntities.add(ae);
+        }
+        if (user == null) {
+          return Optional.empty();
+        } else {
+          user.setAuthorities(authorityEntities);
+          return Optional.of(user);
+        }
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
 }
