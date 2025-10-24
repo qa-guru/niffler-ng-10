@@ -32,7 +32,7 @@ public class ProfilePage {
 
 
     @Step("Check Profile Page elements")
-    public ProfilePage checkProfilePageElements() {
+    public ProfilePage checkProfilePageLoaded() {
         avatarOfUser.shouldBe(visible);
         uploadNewPictureButton.shouldBe(visible);
         registerPasskeyButton.shouldBe(visible);
@@ -74,6 +74,5 @@ public class ProfilePage {
         toggleShowArchived.click();
         return this;
     }
-
 
 }

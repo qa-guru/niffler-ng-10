@@ -12,16 +12,13 @@ public class RegisterPage {
             usernameInput = $("#username"),
             passwordInput = $("#password"),
             passwordSubmitInput = $("#passwordSubmit"),
-            sighUpButton = $("#register-button"),
-            signInButton = $(".form_sign-in"), //Кнопка при успешной регистрации
-            errorMessageUserAlreadyExist = $(".form__error"), //Username `User_1` already exists
+            sighUpButton = $("#register-button").as("Кнопка перехода на главную страницу"),
+            signInButton = $(".form_sign-in").as("Кнопка при успешной регистрации"),
+            errorMessage = $(".form__error"),
             successMessage = $(".form__paragraph_success");
 
-    String successRegisterText = "Congratulations! You've registered!";
-
-
     @Step("Create a new user ")
-    public RegisterPage fillAndSubmitRegistration(String userName,String password, String confirmPassword  ) {
+    public RegisterPage fillAndSubmitRegistration(String userName, String password, String confirmPassword) {
         usernameInput.setValue(userName);
         passwordInput.setValue(password);
         passwordSubmitInput.setValue(confirmPassword);
@@ -59,21 +56,21 @@ public class RegisterPage {
         return new LoginPage();
     }
 
-    @Step("Check Error message")
+    @Step("Check success message")
     public RegisterPage checkSuccessMessage() {
-        successMessage.shouldHave(text(successRegisterText));
+        successMessage.shouldHave(text("Congratulations! You've registered!"));
         return this;
     }
 
     @Step("Check Error message")
-    public RegisterPage checkErrorMessage() {
-        errorMessageUserAlreadyExist.shouldBe(visible);
+    public RegisterPage checkErrorMessage(String message) {
+        errorMessage.shouldHave(text(message));
         return this;
     }
 
     @Step("Check Error message")
     public RegisterPage checkErrorMessageWithText(String text) {
-        errorMessageUserAlreadyExist.shouldHave(text(text));
+        errorMessage.shouldHave(text(text));
         return this;
     }
 

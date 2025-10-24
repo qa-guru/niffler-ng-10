@@ -14,9 +14,9 @@ public class ProfileTest {
     private static final Config CFG = Config.getInstance();
     private static final String userLogin = "User_3";
     private static final String userPassword = "12345";
+    private final MainPage mainPage = new MainPage();
+    private final ProfilePage profilePage = new ProfilePage();
     private LoginPage loginPage;
-    private MainPage mainPage = new MainPage();
-    private ProfilePage profilePage = new ProfilePage();
 
     @BeforeEach
     void setUp() {
@@ -30,16 +30,17 @@ public class ProfileTest {
             archived = false)
     @Test
     void activeCategoryShouldPresentInCategoryList(CategoryJson category) {
-    profilePage.checkCategoryIsDisplayed(category.name());
+        profilePage.checkCategoryIsDisplayed(category.name());
 
     }
+
     @Category(
             username = userLogin,
             archived = true)
     @Test
     void archivedCategoryShouldNotBePresentedInActiveCategoryList(CategoryJson category) {
-    profilePage.showActiveAndArchivedCategoriesList();
-    profilePage.checkArchiveCategoryIsDisplayed(category.name());
+        profilePage.showActiveAndArchivedCategoriesList();
+        profilePage.checkArchiveCategoryIsDisplayed(category.name());
 
     }
 

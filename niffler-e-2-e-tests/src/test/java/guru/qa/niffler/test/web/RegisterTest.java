@@ -32,7 +32,7 @@ public class RegisterTest {
         registerPage.fillAndSubmitRegistration(userName, userPassword, userPassword)
                 .checkSuccessMessage()
                 .sighInButtonToLoginPage();
-        loginPage.checkLoginPageElements();
+        loginPage.checkLoginPageLoaded();
     }
 
     @Test
@@ -45,7 +45,7 @@ public class RegisterTest {
         registerPage.fillAndSubmitRegistration(userName, userPassword, userPassword)
                 .checkSuccessMessage()
                 .sighInButtonToLoginPage();
-        loginPage.checkLoginPageElements();
+        loginPage.checkLoginPageLoaded();
         loginPage.goToRegistrationPage();
         registerPage.fillAndSubmitRegistration(userName, userPasswordNew, userPasswordNew)
                 .checkErrorMessageWithText("Username `" + userName + "` already exists");
@@ -84,7 +84,7 @@ public class RegisterTest {
         registerPage.fillAndSubmitRegistration(userName, userPassword, userPassword)
                 .sighInButtonToLoginPage();
         loginPage.login(userName, userPasswordNew);
-        loginPage.checkLoginPageElements();
+        loginPage.checkLoginPageLoaded();
         registerPage.checkErrorMessageWithText("Неверные учетные данные пользователя");
 
     }

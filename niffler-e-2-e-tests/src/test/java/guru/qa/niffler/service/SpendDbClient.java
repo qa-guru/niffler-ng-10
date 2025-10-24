@@ -162,6 +162,7 @@ public class SpendDbClient implements SpendClient {
 
     @Override
     public void deleteSpend(String username, List<String> ids) {
-
+        throw new UnsupportedOperationException("Метод deleteSpend не реализован.");
     }
+
 }

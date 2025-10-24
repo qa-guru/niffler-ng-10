@@ -23,7 +23,7 @@ public class CategoryExtension implements BeforeEachCallback, AfterTestExecution
                                     null,
                                     getRandomCategory(),
                                     annotation.username(),
-                                    annotation.archived() //дефолтное значение false
+                                    false
                             );
                             CategoryJson created = spendClient.createCategory(newCategory);
                             if (annotation.archived()) {
@@ -33,7 +33,7 @@ public class CategoryExtension implements BeforeEachCallback, AfterTestExecution
                                         newCategory.username(),
                                         true
                                 );
-                                spendClient.updateCategory(archivedCategory);
+                                created = spendClient.updateCategory(archivedCategory);
                             }
                             context.getStore(NAMESPACE).put(context.getUniqueId(), created);
                         }

@@ -27,7 +27,7 @@ public class LoginPage {
     return new RegisterPage();
   }
 
-  public LoginPage checkLoginPageElements() {
+  public LoginPage checkLoginPageLoaded() {
     usernameInput.shouldBe(visible);
     passwordInput.shouldBe(visible);
     logInButton.shouldBe(visible);
