@@ -11,5 +11,9 @@ public interface UserdataUserDao {
 
   Optional<UserEntity> findById(UUID id);
 
+  Optional<UserEntity> findByUsername(String username);
+
   List<UserEntity> findAll();
+
+  UserEntity update(UserEntity user);
 }

@@ -4,20 +4,18 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.CategoryDao;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.mapper.CategoryEntityRowMapper;
-import guru.qa.niffler.data.tpl.DataSources;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static guru.qa.niffler.data.tpl.Connections.holder;
+import static guru.qa.niffler.data.jdbc.DataSources.dataSource;
 
 public class CategoryDaoSpringJdbc implements CategoryDao {
 
@@ -26,11 +24,11 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
 
   @Override
   public CategoryEntity create(CategoryEntity category) {
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(URL));
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(URL));
     KeyHolder kh = new GeneratedKeyHolder();
     jdbcTemplate.update(con -> {
       PreparedStatement ps = con.prepareStatement(
-          "INSERT INTO \"category\" (username, name, archived) " +
+          "INSERT INTO category (username, name, archived) " +
               "VALUES (?, ?, ?)",
           Statement.RETURN_GENERATED_KEYS
       );
@@ -46,20 +44,8 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
   }
 
   @Override
-  public CategoryEntity update(CategoryEntity category) {
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(URL));
-    jdbcTemplate.update(
-        "UPDATE \"category\" SET name = ?, archived = ? WHERE id = ?",
-        category.getName(),
-        category.isArchived(),
-        category.getId()
-    );
-    return category;
-  }
-
-  @Override
   public Optional<CategoryEntity> findCategoryById(UUID id) {
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(URL));
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(URL));
     try {
       return Optional.ofNullable(
           jdbcTemplate.queryForObject(
@@ -74,11 +60,60 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
   }
 
   @Override
+  public Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String categoryName) {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(URL));
+    try {
+      return Optional.ofNullable(
+          jdbcTemplate.queryForObject(
+              "SELECT * FROM \"category\" WHERE username = ? and name = ?",
+              CategoryEntityRowMapper.instance,
+              username,
+              categoryName
+          )
+      );
+    } catch (EmptyResultDataAccessException e) {
+      return Optional.empty();
+    }
+  }
+
+  @Override
   public List<CategoryEntity> findAll() {
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(URL));
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(URL));
     return jdbcTemplate.query(
         "SELECT * FROM \"category\"",
         CategoryEntityRowMapper.instance
     );
+  }
+
+  @Override
+  public List<CategoryEntity> findAllByUsername(String username) {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(URL));
+    return jdbcTemplate.query(
+        "SELECT * FROM \"category\" where username = ?",
+        CategoryEntityRowMapper.instance,
+        username
+    );
+  }
+
+  @Override
+  public void deleteCategory(CategoryEntity category) {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(URL));
+    jdbcTemplate.update("DELETE FROM category WHERE id = ?", category.getId());
+  }
+
+  @Override
+  public CategoryEntity update(CategoryEntity category) {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(URL));
+    jdbcTemplate.update("""
+              UPDATE "category"
+                SET name     = ?,
+                    archived = ?
+                WHERE id = ?
+            """,
+        category.getName(),
+        category.isArchived(),
+        category.getId()
+    );
+    return category;
   }
 }

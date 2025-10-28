@@ -22,9 +22,10 @@ import java.io.OutputStream;
 /**
  * Webauth (passkeys) instead Oauth should use JSON-serialization
  * Also, very important to use the same ObjectMapper that was configured via
+ *
+ * @link <a href="https://docs.spring.io/spring-session/reference/configuration/jdbc.html#session-attributes-as-json">doc</a>
  * @see JdbcSessionObjectMapperConfigurer#apply(ClassLoader, ObjectMapper)
  * in this config and jdbcOAuth2AuthorizationService bean
- * @link <a href="https://docs.spring.io/spring-session/reference/configuration/jdbc.html#session-attributes-as-json">doc</a>
  */
 @Configuration
 @EnableJdbcHttpSession(maxInactiveIntervalInSeconds = 3600)
@@ -44,6 +45,7 @@ public class SessionConfig implements BeanClassLoaderAware {
 
   /**
    * For ObjectMapper configuration
+   *
    * @see guru.qa.niffler.config.SessionConfig#springSessionConversionService(ObjectMapper)
    */
   private ClassLoader classLoader;
