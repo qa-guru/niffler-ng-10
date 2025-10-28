@@ -11,6 +11,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface Spending {
   String description();
+
   double amount();
 
   CurrencyValues currency() default CurrencyValues.RUB;

@@ -31,13 +31,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * This configuration should be used in following beans:
+ *
+ * @link <a href="https://stackoverflow.com/questions/79281677/how-to-use-spring-security-6-4-0-passkeys-with-redishttpsessionrepository/79299083#79299083">stackoverflow</a>
+ * @link <a href="https://github.com/spring-projects/spring-security/issues/16328">github issue</a>
+ * <p>
+ * Also, important to use @Primary ObjectMapper from ApplicationContext as parameter & bean classloader
  * @see guru.qa.niffler.config.SessionConfig#springSessionConversionService(ObjectMapper)
  * @see guru.qa.niffler.config.NifflerAuthServiceConfig#jdbcOAuth2AuthorizationService(JdbcOperations, RegisteredClientRepository, ObjectMapper)
  * Thanks so much for
- * @link <a href="https://stackoverflow.com/questions/79281677/how-to-use-spring-security-6-4-0-passkeys-with-redishttpsessionrepository/79299083#79299083">stackoverflow</a>
- * @link <a href="https://github.com/spring-projects/spring-security/issues/16328">github issue</a>
- *
- * Also, important to use @Primary ObjectMapper from ApplicationContext as parameter & bean classloader
  */
 public class JdbcSessionObjectMapperConfigurer {
 
