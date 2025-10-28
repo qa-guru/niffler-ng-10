@@ -4,6 +4,7 @@ import com.codeborne.selenide.SelenideElement;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selectors.withText;
 import static com.codeborne.selenide.Selenide.$;
 
@@ -12,6 +13,7 @@ public class MainPage {
     private final SelenideElement menuOfUser = $("[data-testid='PersonIcon']");
     private final SelenideElement profileOfUser = $(withText("Profile"));
     private final SelenideElement statisticsPart = $("#stat");
+    private final SelenideElement friendsPage = $(byText("Friends"));
 
     public MainPage checkThatPageLoaded() {
         spendingTable.should(visible);
@@ -33,5 +35,11 @@ public class MainPage {
         menuOfUser.click();
         profileOfUser.click();
         return new ProfilePage();
+    }
+
+    public FriendsPage goToFriendsPage() {
+        menuOfUser.click();
+        friendsPage.click();
+        return new FriendsPage();
     }
 }
