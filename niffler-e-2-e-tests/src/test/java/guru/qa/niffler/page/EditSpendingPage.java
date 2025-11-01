@@ -10,7 +10,7 @@ public class EditSpendingPage {
 
   public EditSpendingPage setNewSpendingDescription(String description) {
     descriptionInput.val(description);
-    saveBtn.click();
+//    saveBtn.click();
     return this;
   }
 

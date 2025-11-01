@@ -1,6 +1,7 @@
 package guru.qa.niffler.jupiter.extension;
 
 import guru.qa.niffler.jupiter.annotation.Spending;
+import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.service.SpendApiClient;
@@ -20,30 +21,32 @@ public class SpendingExtension implements BeforeEachCallback, ParameterResolver 
   public void beforeEach(ExtensionContext context) {
     AnnotationSupport.findAnnotation(
         context.getRequiredTestMethod(),
-        Spending.class
+        User.class
     ).ifPresent(
         anno -> {
-          final SpendJson created = spendClient.createSpend(
-              new SpendJson(
-                  null,
-                  new Date(),
-                  new CategoryJson(
-                      null,
-                      anno.category(),
-                      anno.username(),
-                      false
-                  ),
-                  anno.currency(),
-                  anno.amount(),
-                  anno.description(),
-                  anno.username()
-              )
-          );
-          context.getStore(NAMESPACE).put(
-              context.getUniqueId(),
-              created
-          );
-        }
+            if(anno.spendings().length>0) {
+                Spending spendingFirst = anno.spendings()[0];
+                final SpendJson created = spendClient.createSpend(
+                        new SpendJson(
+                                null,
+                                new Date(),
+                                new CategoryJson(
+                                        null,
+                                        spendingFirst.category(),
+                                        anno.username(),
+                                        false
+                                ),
+                                spendingFirst.currency(),
+                                spendingFirst.amount(),
+                                spendingFirst.description(),
+                                anno.username()
+                        )
+                );
+                context.getStore(NAMESPACE).put(
+                        context.getUniqueId(),
+                        created
+                );
+            }}
     );
   }
 
