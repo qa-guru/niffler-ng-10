@@ -54,7 +54,7 @@ public class CategoryDaoJdbc implements CategoryDao {
           "SELECT * FROM category WHERE id = ?"
       )) {
         ps.setObject(1, id);
-        ps.execute();
+        ps.execute(); // Делаем execute тк делаем SELECT a не INSERT
         try (ResultSet rs = ps.getResultSet()) {
           if (rs.next()) {
             CategoryEntity ce = new CategoryEntity();

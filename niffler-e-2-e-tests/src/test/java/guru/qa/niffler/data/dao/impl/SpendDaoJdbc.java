@@ -31,7 +31,7 @@ public class SpendDaoJdbc implements SpendDao {
         ps.setString(5, spend.getDescription());
         ps.setObject(6, spend.getCategory().getId());
 
-        ps.executeUpdate();
+        ps.executeUpdate(); // Этим мы досылаем наши засеченные параметры в SQl который ранее с вопросиками положили
 
         final UUID generatedKey;
         try (ResultSet rs = ps.getGeneratedKeys()) {

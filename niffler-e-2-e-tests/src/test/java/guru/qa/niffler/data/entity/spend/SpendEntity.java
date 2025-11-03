@@ -20,6 +20,7 @@ public class SpendEntity implements Serializable {
   private String description;
   private CategoryEntity category;
 
+  //Метод, что бы из JSON получать Entity для БД
   public static SpendEntity fromJson(SpendJson json) {
     SpendEntity se = new SpendEntity();
     se.setId(json.id());
