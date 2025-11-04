@@ -7,8 +7,7 @@ import guru.qa.niffler.page.RegisterPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static guru.qa.niffler.util.DataUtil.getRandomPassword;
-import static guru.qa.niffler.util.DataUtil.getRandomUserName;
+import static guru.qa.niffler.util.RandomDataUtils.randomUserName;
 
 public class RegisterTest {
     private static final Config CFG = Config.getInstance();
@@ -25,8 +24,8 @@ public class RegisterTest {
 
     @Test
     void shouldRegisterNewUser() {
-        String userName = getRandomUserName();
-        String userPassword = getRandomPassword();
+        String userName = randomUserName();
+        String userPassword = "12345";
 
         loginPage.goToRegistrationPage();
         registerPage.fillAndSubmitRegistration(userName, userPassword, userPassword)
@@ -37,9 +36,9 @@ public class RegisterTest {
 
     @Test
     void shouldNotRegisterWithExistingUserName() {
-        String userName = getRandomUserName();
-        String userPassword = getRandomPassword();
-        String userPasswordNew = getRandomPassword();
+        String userName = randomUserName();
+        String userPassword = "12345";
+        String userPasswordNew = "12345";
 
         loginPage.goToRegistrationPage();
         registerPage.fillAndSubmitRegistration(userName, userPassword, userPassword)
@@ -53,8 +52,8 @@ public class RegisterTest {
 
     @Test
     void shouldShowErrorIfPasswordAndConfirmPasswordAreNotEqual() {
-        String userName = getRandomUserName();
-        String userPassword = getRandomPassword();
+        String userName = randomUserName();
+        String userPassword = "12345";
         String userPasswordNew = userPassword.concat("123");
 
         loginPage.goToRegistrationPage();
@@ -64,8 +63,8 @@ public class RegisterTest {
 
     @Test
     void mainPageShouldBeDisplayedAfterSuccessLogin() {
-        String userName = getRandomUserName();
-        String userPassword = getRandomPassword();
+        String userName = randomUserName();
+        String userPassword = "12345";
 
         loginPage.goToRegistrationPage();
         registerPage.fillAndSubmitRegistration(userName, userPassword, userPassword)
@@ -76,8 +75,8 @@ public class RegisterTest {
 
     @Test
     void userShouldStayOnLoginPageAfterLoginWithBadCredentials() {
-        String userName = getRandomUserName();
-        String userPassword = getRandomPassword();
+        String userName = randomUserName();
+        String userPassword = "12345";
         String userPasswordNew = userPassword.concat("123");
 
         loginPage.goToRegistrationPage();
