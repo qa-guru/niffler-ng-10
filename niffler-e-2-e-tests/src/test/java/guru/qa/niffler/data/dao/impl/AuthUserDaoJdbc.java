@@ -5,6 +5,7 @@ import guru.qa.niffler.data.dao.AuthUserDao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.mapper.AuthUserEntityRowMapper;
 
+import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,7 +21,9 @@ public class AuthUserDaoJdbc implements AuthUserDao {
   private static final Config CFG = Config.getInstance();
   private static final String URL = CFG.authJdbcUrl();
 
+  @Nonnull
   @Override
+  @SuppressWarnings("resource")
   public AuthUserEntity create(AuthUserEntity user) {
     try (PreparedStatement ps = holder(URL).connection().prepareStatement(
         "INSERT INTO \"user\" (username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired) " +
@@ -49,7 +52,9 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     }
   }
 
+  @Nonnull
   @Override
+  @SuppressWarnings("resource")
   public Optional<AuthUserEntity> findById(UUID id) {
     try (PreparedStatement ps = holder(URL).connection().prepareStatement("SELECT * FROM \"user\" WHERE id = ?")) {
       ps.setObject(1, id);
@@ -69,7 +74,9 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     }
   }
 
+  @Nonnull
   @Override
+  @SuppressWarnings("resource")
   public Optional<AuthUserEntity> findByUsername(String username) {
     try (PreparedStatement ps = holder(URL).connection().prepareStatement("SELECT * FROM \"user\" WHERE username = ?")) {
       ps.setString(1, username);
@@ -91,7 +98,9 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     }
   }
 
+  @Nonnull
   @Override
+  @SuppressWarnings("resource")
   public List<AuthUserEntity> findAll() {
     try (PreparedStatement ps = holder(URL).connection().prepareStatement(
         "SELECT * FROM \"user\"")) {

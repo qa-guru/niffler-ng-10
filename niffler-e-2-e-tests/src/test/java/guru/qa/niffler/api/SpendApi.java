@@ -12,8 +12,11 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
+@ParametersAreNonnullByDefault
 public interface SpendApi {
   @POST("internal/spends/add")
   Call<SpendJson> createSpend(@Body SpendJson spend);
@@ -26,9 +29,9 @@ public interface SpendApi {
 
   @GET("internal/spends/all")
   Call<List<SpendJson>> allSpends(@Query("username") String username,
-                                  @Query("filterCurrency") CurrencyValues filterCurrency,
-                                  @Query("from") String from,
-                                  @Query("to") String to);
+                                  @Nullable @Query("filterCurrency") CurrencyValues filterCurrency,
+                                  @Nullable @Query("from") String from,
+                                  @Nullable @Query("to") String to);
 
   @DELETE("internal/spends/remove")
   Call<Void> removeSpends(@Query("username") String username, @Query("ids") List<String> ids);
@@ -42,3 +45,4 @@ public interface SpendApi {
   @GET("internal/categories/all")
   Call<List<CategoryJson>> allCategories(@Query("username") String username);
 }
+

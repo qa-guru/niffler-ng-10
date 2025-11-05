@@ -9,12 +9,18 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@ParametersAreNonnullByDefault
 public class SpendApiClient implements SpendClient {
 
   private static final Config CFG = Config.getInstance();
@@ -26,6 +32,7 @@ public class SpendApiClient implements SpendClient {
 
   private final SpendApi spendApi = retrofit.create(SpendApi.class);
 
+  @Nonnull
   @Override
   public SpendJson createSpend(SpendJson spend) {
     final Response<SpendJson> response;
@@ -36,9 +43,10 @@ public class SpendApiClient implements SpendClient {
       throw new AssertionError(e);
     }
     assertEquals(201, response.code());
-    return response.body();
+    return requireNonNull(response.body());
   }
 
+  @Nonnull
   @Override
   public CategoryJson createCategory(CategoryJson category) {
     final Response<CategoryJson> response;
@@ -49,9 +57,10 @@ public class SpendApiClient implements SpendClient {
       throw new AssertionError(e);
     }
     assertEquals(200, response.code());
-    return response.body();
+    return requireNonNull(response.body());
   }
 
+  @Nonnull
   @Override
   public CategoryJson updateCategory(CategoryJson category) {
     final Response<CategoryJson> response;
@@ -62,9 +71,10 @@ public class SpendApiClient implements SpendClient {
       throw new AssertionError(e);
     }
     assertEquals(200, response.code());
-    return response.body();
+    return requireNonNull(response.body());
   }
 
+  @Nonnull
   public SpendJson editSpend(SpendJson spend) {
     final Response<SpendJson> response;
     try {
@@ -74,9 +84,10 @@ public class SpendApiClient implements SpendClient {
       throw new AssertionError(e);
     }
     assertEquals(200, response.code());
-    return response.body();
+    return requireNonNull(response.body());
   }
 
+  @Nonnull
   public SpendJson getSpend(String id) {
     final Response<SpendJson> response;
     try {
@@ -86,13 +97,14 @@ public class SpendApiClient implements SpendClient {
       throw new AssertionError(e);
     }
     assertEquals(200, response.code());
-    return response.body();
+    return requireNonNull(response.body());
   }
 
+  @Nonnull
   public List<SpendJson> allSpends(String username,
-                                   CurrencyValues currency,
-                                   String from,
-                                   String to) {
+                                   @Nullable CurrencyValues currency,
+                                   @Nullable String from,
+                                   @Nullable String to) {
     final Response<List<SpendJson>> response;
     try {
       response = spendApi.allSpends(username, currency, from, to)
@@ -101,7 +113,9 @@ public class SpendApiClient implements SpendClient {
       throw new AssertionError(e);
     }
     assertEquals(200, response.code());
-    return response.body();
+    return response.body() != null
+        ? response.body()
+        : Collections.emptyList();
   }
 
   public void removeSpends(String username, String... ids) {
@@ -115,6 +129,7 @@ public class SpendApiClient implements SpendClient {
     assertEquals(200, response.code());
   }
 
+  @Nonnull
   public List<CategoryJson> allCategory(String username) {
     final Response<List<CategoryJson>> response;
     try {
@@ -124,6 +139,8 @@ public class SpendApiClient implements SpendClient {
       throw new AssertionError(e);
     }
     assertEquals(200, response.code());
-    return response.body();
+    return response.body() != null
+        ? response.body()
+        : Collections.emptyList();
   }
 }

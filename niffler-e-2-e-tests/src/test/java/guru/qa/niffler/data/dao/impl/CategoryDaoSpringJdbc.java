@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
@@ -22,6 +23,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
   private static final Config CFG = Config.getInstance();
   private static final String URL = CFG.spendJdbcUrl();
 
+  @Nonnull
   @Override
   public CategoryEntity create(CategoryEntity category) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(URL));
@@ -43,6 +45,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
     return category;
   }
 
+  @Nonnull
   @Override
   public Optional<CategoryEntity> findCategoryById(UUID id) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(URL));
@@ -59,6 +62,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
     }
   }
 
+  @Nonnull
   @Override
   public Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String categoryName) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(URL));
@@ -76,6 +80,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
     }
   }
 
+  @Nonnull
   @Override
   public List<CategoryEntity> findAll() {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(URL));
@@ -85,6 +90,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
     );
   }
 
+  @Nonnull
   @Override
   public List<CategoryEntity> findAllByUsername(String username) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(URL));
@@ -101,6 +107,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
     jdbcTemplate.update("DELETE FROM category WHERE id = ?", category.getId());
   }
 
+  @Nonnull
   @Override
   public CategoryEntity update(CategoryEntity category) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(URL));
