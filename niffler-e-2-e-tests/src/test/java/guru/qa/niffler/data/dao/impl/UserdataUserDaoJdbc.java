@@ -7,6 +7,7 @@ import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.mapper.UserdataUserEntityRowMapper;
 import guru.qa.niffler.model.CurrencyValues;
 
+import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,7 +23,9 @@ public class UserdataUserDaoJdbc implements UserdataUserDao {
   private static final Config CFG = Config.getInstance();
   private static final String URL = CFG.userdataJdbcUrl();
 
+  @Nonnull
   @Override
+  @SuppressWarnings("resource")
   public UserEntity create(UserEntity user) {
     try (PreparedStatement ps = holder(URL).connection().prepareStatement(
         "INSERT INTO \"user\" (username, currency) VALUES (?, ?)",
@@ -45,7 +48,9 @@ public class UserdataUserDaoJdbc implements UserdataUserDao {
     }
   }
 
+  @Nonnull
   @Override
+  @SuppressWarnings("resource")
   public Optional<UserEntity> findById(UUID id) {
     try (PreparedStatement ps = holder(URL).connection().prepareStatement("SELECT * FROM \"user\" WHERE id = ? ")) {
       ps.setObject(1, id);
@@ -54,7 +59,7 @@ public class UserdataUserDaoJdbc implements UserdataUserDao {
       ResultSet rs = ps.getResultSet();
 
       if (rs.next()) {
-        return Optional.of(
+        return Optional.ofNullable(
             UserdataUserEntityRowMapper.instance.mapRow(rs, rs.getRow())
         );
       } else {
@@ -65,7 +70,9 @@ public class UserdataUserDaoJdbc implements UserdataUserDao {
     }
   }
 
+  @Nonnull
   @Override
+  @SuppressWarnings("resource")
   public Optional<UserEntity> findByUsername(String username) {
     try (PreparedStatement ps = holder(URL).connection().prepareStatement("SELECT * FROM \"user\" WHERE username = ? ")) {
       ps.setString(1, username);
@@ -74,7 +81,7 @@ public class UserdataUserDaoJdbc implements UserdataUserDao {
       ResultSet rs = ps.getResultSet();
 
       if (rs.next()) {
-        return Optional.of(
+        return Optional.ofNullable(
             UserdataUserEntityRowMapper.instance.mapRow(rs, rs.getRow())
         );
       } else {
@@ -85,7 +92,9 @@ public class UserdataUserDaoJdbc implements UserdataUserDao {
     }
   }
 
+  @Nonnull
   @Override
+  @SuppressWarnings("resource")
   public List<UserEntity> findAll() {
     try (PreparedStatement ps = holder(URL).connection().prepareStatement(
         "SELECT * FROM spend")) {
@@ -111,7 +120,9 @@ public class UserdataUserDaoJdbc implements UserdataUserDao {
     }
   }
 
+  @Nonnull
   @Override
+  @SuppressWarnings("resource")
   public UserEntity update(UserEntity user) {
     try (PreparedStatement usersPs = holder(URL).connection().prepareStatement(
         """

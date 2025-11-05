@@ -16,10 +16,12 @@ import jakarta.persistence.criteria.CriteriaUpdate;
 import jakarta.persistence.metamodel.Metamodel;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("resource")
+@ParametersAreNonnullByDefault
 public class ThreadSafeEntityManager implements EntityManager {
 
   private final ThreadLocal<EntityManager> threadEm = new ThreadLocal<>();
