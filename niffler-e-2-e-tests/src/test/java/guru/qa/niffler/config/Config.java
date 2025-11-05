@@ -6,7 +6,9 @@ public interface Config {
 
   @Nonnull
   static Config getInstance() {
-    return LocalConfig.INSTANCE;
+    return ("docker".equals(System.getProperty("test.env")))
+        ? DockerConfig.INSTANCE
+        : LocalConfig.INSTANCE;
   }
 
   @Nonnull
