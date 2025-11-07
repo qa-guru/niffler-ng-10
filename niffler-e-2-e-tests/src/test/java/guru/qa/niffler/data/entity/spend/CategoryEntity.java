@@ -16,7 +16,8 @@ public class CategoryEntity implements Serializable {
   private boolean archived;
 
 
-   //Метод, что бы из  JSON получать Entity для БД
+  //Метод, что бы из JSON получать Entity для БД
+  //Обычно поля в Entity не совпадают с полями в таблице базы данных. Для этого они и есть
   public static CategoryEntity fromJson(CategoryJson json) {
     CategoryEntity ce = new CategoryEntity();
     ce.setId(json.id());

@@ -58,7 +58,7 @@ public class SpendDbClient implements SpendClient {
             final KeyHolder kh = new GeneratedKeyHolder();
             jdbcTemplate.update(conn -> {
                 PreparedStatement ps = conn.prepareStatement(
-                        "INSERT INTO \"category\" (name, username, archived) " +
+                        "INSERT INTO category (name, username, archived) " +
                                 "VALUES (?, ?, ?)",
                         Statement.RETURN_GENERATED_KEYS
                 );
@@ -94,7 +94,7 @@ public class SpendDbClient implements SpendClient {
             );
             return Optional.ofNullable(
                     jdbcTemplate.queryForObject(
-                            "SELECT * FROM \"category\" WHERE username = ? and name = ?",
+                            "SELECT * FROM category WHERE username = ? and name = ?",
                             (rs, rowNum) -> new CategoryJson(
                                     rs.getObject("id", UUID.class),
                                     rs.getString("name"),
@@ -108,6 +108,14 @@ public class SpendDbClient implements SpendClient {
         } catch (Exception e) {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public CategoryJson updateCategory(CategoryJson category) {
+        return CategoryJson.fromEntity(
+                categoryDao.update(
+                        CategoryEntity.fromJson(category)));
+
     }
 
     @Override
@@ -132,11 +140,6 @@ public class SpendDbClient implements SpendClient {
 
     @Override
     public void deleteSpend(String username, List<String> ids) {
-
-    }
-
-    @Override
-    public CategoryJson updateCategory(CategoryJson category) {
-        throw new UnsupportedOperationException("Not implemented :(");
     }
 }
+
