@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SpendApiClient implements SpendClient {
 
-
     private static final Config CFG = Config.getInstance();
 
     private final Retrofit retrofit = new Retrofit.Builder()

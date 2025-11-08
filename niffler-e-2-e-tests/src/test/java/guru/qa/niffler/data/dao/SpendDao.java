@@ -9,10 +9,10 @@ import java.util.UUID;
 public interface SpendDao {
     SpendEntity create(SpendEntity spend);
 
-  /*ДЗ*/  Optional<SpendEntity> findSpendById(UUID id);
+    Optional<SpendEntity> findSpendById(UUID id);
 
-  /*ДЗ*/    List<SpendEntity> findAllByUsername(String username);
+    List<SpendEntity> findAllByUsername(String username);
 
-  /*ДЗ*/  void deleteSpend(SpendEntity spend);
+    void deleteSpend(SpendEntity spend);
 
 }
