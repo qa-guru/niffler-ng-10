@@ -15,15 +15,4 @@ public interface SpendClient {
 
   CategoryJson updateCategory(CategoryJson category);
 
-  Optional<CategoryJson> findCategoryByNameAndUsername(String categoryName, String username);
-
-  List<CategoryJson> getAllCategoriesByUsername(String username);
-
-  SpendJson editSpend(SpendJson spend);
-
-  SpendJson getSpendById(String id);
-
-  List<SpendJson> getAllSpends(String username, CurrencyValues currency, String from, String to);
-
-  void deleteSpend (String username, List<String> ids);
 }

@@ -131,8 +131,4 @@ public class SpendApiClient implements SpendClient {
         return response.body();
     }
 
-    @Override
-    public Optional<CategoryJson> findCategoryByNameAndUsername(String categoryName, String username) {
-        throw new UnsupportedOperationException("Not implemented :(");
-    }
 }

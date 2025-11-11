@@ -51,7 +51,7 @@ public class SpendDaoJdbc implements SpendDao {
     }
 
     @Override
-    public Optional<SpendEntity> findSpendById(UUID id) {
+    public Optional<SpendEntity> findById(UUID id) {
         try (Connection connection = Databases.connection(CFG.spendJdbcUrl())) {
             try (PreparedStatement ps = connection.prepareStatement(
                     "SELECT * FROM spend WHERE id = ?"
@@ -68,7 +68,7 @@ public class SpendDaoJdbc implements SpendDao {
                         se.setAmount(rs.getDouble("amount"));
                         se.setDescription(rs.getString("description"));
                         CategoryEntity category = new CategoryEntity();
-                        category.setId(UUID.fromString(rs.getString("category_id")));
+                        category.setId(rs.getObject("category_id", UUID.class));
                         se.setCategory(category);
                         return Optional.of(se);
                     } else {
@@ -100,7 +100,7 @@ public class SpendDaoJdbc implements SpendDao {
                         se.setAmount(rs.getDouble("amount"));
                         se.setDescription(rs.getString("description"));
                         CategoryEntity category = new CategoryEntity();
-                        category.setId(UUID.fromString(rs.getString("category_id")));
+                        category.setId(rs.getObject("category_id", UUID.class));
                         se.setCategory(category);
                         spendList.add(se);
                     }
@@ -113,7 +113,7 @@ public class SpendDaoJdbc implements SpendDao {
     }
 
     @Override
-    public void deleteSpend(SpendEntity spend) {
+    public void delete(SpendEntity spend) {
         try (Connection connection = Databases.connection(CFG.spendJdbcUrl())) {
             try (PreparedStatement ps = connection.prepareStatement(
                     "DELETE FROM spend WHERE id = ? "

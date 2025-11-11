@@ -2,7 +2,7 @@ package guru.qa.niffler.data.dao.impl;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.Databases;
-import guru.qa.niffler.data.dao.UserDataDAO;
+import guru.qa.niffler.data.dao.UserDataDao;
 import guru.qa.niffler.data.entity.spend.UserEntity;
 import guru.qa.niffler.model.CurrencyValues;
 
@@ -10,7 +10,7 @@ import java.sql.*;
 import java.util.Optional;
 import java.util.UUID;
 
-public class UserDataDAOJdbc implements UserDataDAO {
+public class UserDataDaoJdbc implements UserDataDao {
     private static final Config CFG = Config.getInstance();
 
     @Override
@@ -18,9 +18,9 @@ public class UserDataDAOJdbc implements UserDataDAO {
         try (Connection connection = Databases.connection(CFG.userdataJdbcUrl())) {
             try (PreparedStatement ps = connection.prepareStatement(
                     "INSERT INTO user (username, firstname," +
-                            " surname, fullname, " +
+                            " surname, full_name, " +
                             " currency, photo, " +
-                            " photoSmall) " +
+                            " photo_small) " +
                             "VALUES (?, ?, ?, ?, ?, ?, ?)",
                     Statement.RETURN_GENERATED_KEYS
             )) {
