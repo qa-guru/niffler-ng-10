@@ -21,6 +21,7 @@ public class SpendEntity implements Serializable {
   private CategoryEntity category;
 
   //Метод, что бы из JSON получать Entity для БД
+  //Обычно поля в Entity не совпадают с полями в таблице базы данных. Для этого они и есть
   public static SpendEntity fromJson(SpendJson json) {
     SpendEntity se = new SpendEntity();
     se.setId(json.id());
