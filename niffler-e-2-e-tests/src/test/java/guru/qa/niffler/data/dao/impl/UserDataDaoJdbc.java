@@ -17,9 +17,9 @@ public class UserDataDaoJdbc implements UserDataDao {
     }
 
     @Override
-    public UserEntity createUser(UserEntity user) {
+    public UserEntity create(UserEntity user) {
         try (PreparedStatement ps = connection.prepareStatement(
-                "INSERT INTO user (username, firstname," +
+                "INSERT INTO \"user\" (username, firstname," +
                         " surname, full_name, " +
                         " currency, photo, " +
                         " photo_small) " +

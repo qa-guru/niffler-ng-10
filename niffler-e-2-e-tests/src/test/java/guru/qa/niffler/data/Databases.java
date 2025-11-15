@@ -21,24 +21,27 @@ public class Databases {
     //Здесь хранится коннекшен к каждой БД (niffler-auth/niffler-currency/niffler-spend/niffler-userdata)
     // для атомарного доступа ко ключу. Коннекшены вычисляем методом dataSource
     private static final Map<String, DataSource> dataSources = new ConcurrentHashMap<>();
+    //Long - id потока, и к этому потоку привязваем Map коннектов, которыми оперирует ntcn
     private static final Map<Long, Map<String, Connection>> threadConnections = new ConcurrentHashMap<>();
     private Databases() {  //Приватный конструктор как у DriverManager, что бы не создавали каждый раз новый, а как синглтон
     }
-
+    // Создаем, что бы складывать в массив function со своим jdbcUrl, и потом его слать в ХА транзакцию
     public record XaFunction<T>(Function<Connection, T> function, String jdbcUrl) {
     }
 
     public record XaConsumer(Consumer<Connection> function, String jdbcUrl) {
     }
-
+    //Метод возвращающий значение. Мы получаем, а затем передаем коннекшен в функцию,
+    // а функция вызывает внутри себя нужные DAO. Работает с одним соединением
+    //Отличается применение стандартных интерфейсов - здесь Function.
     public static <T> T transaction(Function<Connection, T> function, String jdbcUrl) {
         Connection connection = null;
         try {
-            connection = connection(jdbcUrl);
-            connection.setAutoCommit(false);
-            T result = function.apply(connection);
-            connection.commit();
-            connection.setAutoCommit(true);
+            connection = connection(jdbcUrl); // Получили коннекшен по jdbcUrl
+            connection.setAutoCommit(false);  // Для того, что бы вручную управлять транзакцией
+            T result = function.apply(connection); // Переданная функция (например, лямбда) выполняется с использованием соединения.
+            connection.commit();               // Если все хорошо, то комитим транзакцию.
+            connection.setAutoCommit(true);   // Для того, что бы вручную управлять транзакцией - здесь возвращаем в исходное состояние
             return result;
         } catch (Exception e) {
             if (connection != null) {
@@ -52,9 +55,11 @@ public class Databases {
             throw new RuntimeException(e);
         }
     }
-
+    // На вход мы передаем массив из Function<Connection, T> function, String jdbcUrl.
+    //Т.е для каждой БД по ее jdbcUrl мы выполняем function. А так как у нас их массив, то мы
+    // для каждой БД выполняем свою лямбду(function).
     public static <T> T xaTransaction(XaFunction<T>... actions) {
-        UserTransaction ut = new UserTransactionImp();
+        UserTransaction ut = new UserTransactionImp();  // это и есть распределенная транзакция
         try {
             ut.begin();
             T result = null;
@@ -72,7 +77,9 @@ public class Databases {
             throw new RuntimeException(e);
         }
     }
-
+    // Метод НЕ возвращающий значение. Мы получаем, а затем передаем коннекшен в функцию,
+    // а функция вызывает внутри себя нужные DAO. Работает с одним соединением
+    // Отличается применением стандартных интерфейсов - здесь Consumer.
     public static void transaction(Consumer<Connection> consumer, String jdbcUrl) {
         Connection connection = null;
         try {
@@ -93,15 +100,17 @@ public class Databases {
             throw new RuntimeException(e);
         }
     }
-
+    // На вход мы передаем массив из Function<Connection, T> function, String jdbcUrl.
+    //Т.е для каждой БД по ее jdbcUrl мы выполняем function. А так как у нас их массив, то мы
+    // для каждой БД выполняем свою лямбду(function).
     public static void xaTransaction(XaConsumer... actions) {
         UserTransaction ut = new UserTransactionImp();
         try {
-            ut.begin();
+            ut.begin(); // После этой строки начинаем действия в разных БД выполнять
             for (XaConsumer action : actions) {
                 action.function.accept(connection(action.jdbcUrl));
             }
-            ut.commit();
+            ut.commit();// Это строка говорит, что все действия завершены успешно и мы можем закрыть соединения
         } catch (Exception e) {
             try {
                 ut.rollback();
@@ -111,7 +120,7 @@ public class Databases {
             throw new RuntimeException(e);
         }
     }
-
+    //Готовит пул соединений к БД
     private static DataSource dataSource(String jdbcUrl) {
         return dataSources.computeIfAbsent(  //computeIfAbsent - вернет значение по ключу если оно есть или вычислить значение из лямбды
                 jdbcUrl,
@@ -130,12 +139,12 @@ public class Databases {
                 }
         );
     }
-
+//Этот метод возвращает пул коннекшенов
     private static Connection connection(String jdbcUrl) throws SQLException {
         return threadConnections.computeIfAbsent(
                 Thread.currentThread().threadId(),
-                key -> {
-                    try {
+                key -> {                    //Здесь мы достаем Мар по key привязанному к текущему потоку
+                    try {                         //Либо ее туда кладет, если она отсутствует
                         return new HashMap<>(Map.of(
                                 jdbcUrl,
                                 dataSource(jdbcUrl).getConnection()
@@ -144,8 +153,8 @@ public class Databases {
                         throw new RuntimeException(e);
                     }
                 }
-        ).computeIfAbsent(
-                jdbcUrl,
+        ).computeIfAbsent(                          //Но когда достали Мар мы ищем по jdbc нужный коннекшен
+                jdbcUrl,                            //Либо вычисляем и кладем его туда
                 key -> {
                     try {
                         return dataSource(jdbcUrl).getConnection();
@@ -155,7 +164,7 @@ public class Databases {
                 }
         );
     }
-
+    //Метод который закрывает все коннекты к БД, в конце теста. Реализуем через расширение DatabasesExtension
     public static void closeAllConnections() {
         for (Map<String, Connection> connectionMap : threadConnections.values()) {
             for (Connection connection : connectionMap.values()) {
