@@ -37,8 +37,7 @@ public class Databases {
     public static <T> T transaction(Function<Connection, T> function, String jdbcUrl, int isolationLevel) {
         Connection connection = null;
         try {
-            // Получили коннекшен по jdbcUrl
-            connection = connection(jdbcUrl);
+            connection = connection(jdbcUrl);// Получили коннекшен по jdbcUrl
             connection.setTransactionIsolation(isolationLevel);
             connection.setAutoCommit(false);  // Для того, что бы вручную управлять транзакцией
             T result = function.apply(connection); // Переданная функция (например, лямбда) выполняется с использованием соединения.
