@@ -64,8 +64,7 @@ public class UserDbClient implements UserClient {
                                     userEntity.setSurname(userJson.surname());
                                     userEntity.setFullname(userJson.fullname());
                                     userEntity.setCurrency(userJson.currency());
-//                                    userEntity.setPhoto(userJson.photo().getBytes());
-//                                    userEntity.setPhotoSmall(userJson.photoSmall().getBytes());
+//                                  userEntity.setPhoto и userEntity.setPhotoSmall не использовал т.к. они null
                                     new UserDataDaoJdbc(connection).create(userEntity);
                                     return userEntity;
                                 }

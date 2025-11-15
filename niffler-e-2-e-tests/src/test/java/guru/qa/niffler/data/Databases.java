@@ -34,10 +34,12 @@ public class Databases {
     //Метод возвращающий значение. Мы получаем, а затем передаем коннекшен в функцию,
     // а функция вызывает внутри себя нужные DAO. Работает с одним соединением
     //Отличается применение стандартных интерфейсов - здесь Function.
-    public static <T> T transaction(Function<Connection, T> function, String jdbcUrl) {
+    public static <T> T transaction(Function<Connection, T> function, String jdbcUrl, int isolationLevel) {
         Connection connection = null;
         try {
-            connection = connection(jdbcUrl); // Получили коннекшен по jdbcUrl
+            // Получили коннекшен по jdbcUrl
+            connection = connection(jdbcUrl);
+            connection.setTransactionIsolation(isolationLevel);
             connection.setAutoCommit(false);  // Для того, что бы вручную управлять транзакцией
             T result = function.apply(connection); // Переданная функция (например, лямбда) выполняется с использованием соединения.
             connection.commit();               // Если все хорошо, то комитим транзакцию.
@@ -80,10 +82,11 @@ public class Databases {
     // Метод НЕ возвращающий значение. Мы получаем, а затем передаем коннекшен в функцию,
     // а функция вызывает внутри себя нужные DAO. Работает с одним соединением
     // Отличается применением стандартных интерфейсов - здесь Consumer.
-    public static void transaction(Consumer<Connection> consumer, String jdbcUrl) {
+    public static void transaction(Consumer<Connection> consumer, String jdbcUrl, int isolationLevel) {
         Connection connection = null;
         try {
             connection = connection(jdbcUrl);
+            connection.setTransactionIsolation(isolationLevel);
             connection.setAutoCommit(false);
             consumer.accept(connection);
             connection.commit();
@@ -130,6 +133,7 @@ public class Databases {
                     dsBean.setUniqueResourceName(uniqId);
                     dsBean.setXaDataSourceClassName("org.postgresql.xa.PGXADataSource");
                     Properties props = new Properties();
+                    dsBean.setDefaultIsolationLevel(Connection.TRANSACTION_READ_COMMITTED);
                     props.put("URL", jdbcUrl);
                     props.put("user", "postgres");
                     props.put("password", "secret");

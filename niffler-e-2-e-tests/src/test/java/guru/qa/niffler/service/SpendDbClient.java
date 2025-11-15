@@ -28,7 +28,8 @@ public class SpendDbClient implements SpendClient {
                             new SpendDaoJdbc(connection).create(spendEntity)
                     );
                 },
-                CFG.spendJdbcUrl()
+                CFG.spendJdbcUrl(),
+                1
         );
     }
 
@@ -40,7 +41,8 @@ public class SpendDbClient implements SpendClient {
                                     .create(CategoryEntity.fromJson(category))
                     );
                 },
-                CFG.spendJdbcUrl()
+                CFG.spendJdbcUrl(),
+                1
         );
     }
 
@@ -53,7 +55,8 @@ public class SpendDbClient implements SpendClient {
                             )
                     );
                 },
-                CFG.spendJdbcUrl()
+                CFG.spendJdbcUrl(),
+                1
         );
     }
 }
