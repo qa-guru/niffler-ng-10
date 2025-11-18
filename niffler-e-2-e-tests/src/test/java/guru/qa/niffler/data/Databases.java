@@ -23,14 +23,22 @@ public class Databases {
     private static final Map<String, DataSource> dataSources = new ConcurrentHashMap<>();
     //Long - id потока, и к этому потоку привязваем Map коннектов, которыми оперирует ntcn
     private static final Map<Long, Map<String, Connection>> threadConnections = new ConcurrentHashMap<>();
+
     private Databases() {  //Приватный конструктор как у DriverManager, что бы не создавали каждый раз новый, а как синглтон
     }
+
     // Создаем, что бы складывать в массив function со своим jdbcUrl, и потом его слать в ХА транзакцию
     public record XaFunction<T>(Function<Connection, T> function, String jdbcUrl) {
     }
 
     public record XaConsumer(Consumer<Connection> function, String jdbcUrl) {
     }
+
+    //Перезагруженный метод, что бы передавать в метод по умолчанию уровень изолированности транзакций
+    public static <T> T transaction(Function<Connection, T> function, String jdbcUrl) {
+        return transaction(function, jdbcUrl, Connection.TRANSACTION_READ_COMMITTED);
+    }
+
     //Метод возвращающий значение. Мы получаем, а затем передаем коннекшен в функцию,
     // а функция вызывает внутри себя нужные DAO. Работает с одним соединением
     //Отличается применение стандартных интерфейсов - здесь Function.
@@ -56,6 +64,7 @@ public class Databases {
             throw new RuntimeException(e);
         }
     }
+
     // На вход мы передаем массив из Function<Connection, T> function, String jdbcUrl.
     //Т.е для каждой БД по ее jdbcUrl мы выполняем function. А так как у нас их массив, то мы
     // для каждой БД выполняем свою лямбду(function).
@@ -78,9 +87,15 @@ public class Databases {
             throw new RuntimeException(e);
         }
     }
+
+    //Перезагруженный метод, что бы передавать в метод по умолчанию уровень изолированности транзакций
+    public static void transaction(Consumer<Connection> consumer, String jdbcUrl) {
+        transaction(consumer, jdbcUrl, Connection.TRANSACTION_READ_COMMITTED);
+    }
+
     // Метод НЕ возвращающий значение. Мы получаем, а затем передаем коннекшен в функцию,
     // а функция вызывает внутри себя нужные DAO. Работает с одним соединением
-    // Отличается применением стандартных интерфейсов - здесь Consumer.
+    // отличается применением стандартных интерфейсов - здесь Consumer.
     public static void transaction(Consumer<Connection> consumer, String jdbcUrl, int isolationLevel) {
         Connection connection = null;
         try {
@@ -102,6 +117,7 @@ public class Databases {
             throw new RuntimeException(e);
         }
     }
+
     // На вход мы передаем массив из Function<Connection, T> function, String jdbcUrl.
     //Т.е для каждой БД по ее jdbcUrl мы выполняем function. А так как у нас их массив, то мы
     // для каждой БД выполняем свою лямбду(function).
@@ -122,6 +138,7 @@ public class Databases {
             throw new RuntimeException(e);
         }
     }
+
     //Готовит пул соединений к БД
     private static DataSource dataSource(String jdbcUrl) {
         return dataSources.computeIfAbsent(  //computeIfAbsent - вернет значение по ключу если оно есть или вычислить значение из лямбды
@@ -142,7 +159,8 @@ public class Databases {
                 }
         );
     }
-//Этот метод возвращает пул коннекшенов
+
+    //Этот метод возвращает пул коннекшенов
     private static Connection connection(String jdbcUrl) throws SQLException {
         return threadConnections.computeIfAbsent(
                 Thread.currentThread().threadId(),
@@ -167,7 +185,8 @@ public class Databases {
                 }
         );
     }
-    //Метод который закрывает все коннекты к БД, в конце теста. Реализуем через расширение DatabasesExtension
+
+    //Метод, который закрывает все коннекты к БД, в конце теста. Реализуем через расширение DatabasesExtension
     public static void closeAllConnections() {
         for (Map<String, Connection> connectionMap : threadConnections.values()) {
             for (Connection connection : connectionMap.values()) {

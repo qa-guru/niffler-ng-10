@@ -22,7 +22,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
                         "VALUES (?, ?)",
                 Statement.RETURN_GENERATED_KEYS)) {
             for (AuthAuthorityEntity authAuthority : authAuthorityEntity) {
-                ps.setObject(1, authAuthority.getUser_id());
+                ps.setObject(1, authAuthority.getUserId());
                 ps.setString(2, authAuthority.getAuthority().name());
                 ps.addBatch();
                 ps.clearParameters();

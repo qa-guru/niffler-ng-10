@@ -43,7 +43,7 @@ public class UserDbClient implements UserClient {
                                     //Stream из AuthAuthorityEntity с каждым значением Authority
                                     Stream<AuthAuthorityEntity> entityStream = authorityStream.map(a -> {
                                         AuthAuthorityEntity authAuthEntity = new AuthAuthorityEntity();
-                                        authAuthEntity.setUser_id(authUserEntity.getId());
+                                        authAuthEntity.setUserId(authUserEntity.getId());
                                         authAuthEntity.setAuthority(a);
                                         return authAuthEntity;
                                     });
