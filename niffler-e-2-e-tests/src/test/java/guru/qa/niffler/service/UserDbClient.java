@@ -2,9 +2,7 @@ package guru.qa.niffler.service;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.Databases;
-import guru.qa.niffler.data.dao.impl.AuthAuthorityDaoJdbc;
-import guru.qa.niffler.data.dao.impl.AuthUserDaoJdbc;
-import guru.qa.niffler.data.dao.impl.UserDataDaoJdbc;
+import guru.qa.niffler.data.dao.impl.*;
 import guru.qa.niffler.data.entity.auth.AuthAuthorityEntity;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.Authority;
@@ -16,11 +14,46 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
+import static guru.qa.niffler.data.Databases.dataSource;
 import static guru.qa.niffler.data.Databases.xaTransaction;
 
 public class UserDbClient implements UserClient {
     private static final Config CFG = Config.getInstance();
     private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+
+
+    public UserJson createUserSpringJdbc(UserJson user) {
+        AuthUserEntity authUser = new AuthUserEntity();
+        authUser.setUsername(user.username());
+        authUser.setPassword(pe.encode("12345"));
+        authUser.setEnabled(true);
+        authUser.setAccountNonExpired(true);
+        authUser.setAccountNonLocked(true);
+        authUser.setCredentialsNonExpired(true);
+
+        AuthUserEntity createdAuthUser = new AuthUserDaoSpringJdbc(dataSource(CFG.authJdbcUrl()))
+                .create(authUser);
+
+        AuthAuthorityEntity[] authorityEntities = Arrays.stream(Authority.values()).map(
+                e -> {
+                    AuthAuthorityEntity ae = new AuthAuthorityEntity();
+                    ae.setUserId(createdAuthUser.getId());
+                    ae.setAuthority(e);
+                    return ae;
+                }
+        ).toArray(AuthAuthorityEntity[]::new);
+
+        new AuthAuthorityDaoSpringJdbc(dataSource(CFG.authJdbcUrl()))
+                .create(authorityEntities);
+
+        return UserJson.fromEntity(
+                new UserdataUserDaoSpringJdbc(dataSource(CFG.userdataJdbcUrl()))
+                        .create(
+                                UserEntity.fromJson(user)
+                        )
+        );
+    }
+
 
     @Override
     public UserJson create(UserJson userJson) {
@@ -58,14 +91,8 @@ public class UserDbClient implements UserClient {
                         // и возвращаю объект userEntity, что бы потом преобразовать его в возвращаемый UserJson
                         new Databases.XaFunction<>(
                                 connection -> {
-                                    UserEntity userEntity = new UserEntity();
-                                    userEntity.setUsername(userJson.username());
-                                    userEntity.setFirstname(userJson.firstname());
-                                    userEntity.setSurname(userJson.surname());
-                                    userEntity.setFullname(userJson.fullname());
-                                    userEntity.setCurrency(userJson.currency());
-//                                  userEntity.setPhoto и userEntity.setPhotoSmall не использовал т.к. они null
-                                    new UserDataDaoJdbc(connection).create(userEntity);
+                                    UserEntity userEntity = UserEntity.fromJson(userJson);
+                                    new UserdataUserDaoJdbc(connection).create(userEntity);
                                     return userEntity;
                                 }
                                 , CFG.userdataJdbcUrl()

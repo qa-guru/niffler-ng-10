@@ -20,7 +20,7 @@ public class CategoryDaoJdbc implements CategoryDao {
     @Override
     public CategoryEntity create(CategoryEntity category) {
         try (PreparedStatement ps = connection.prepareStatement(
-                "INSERT INTO category (username, name, archived) " +
+                "INSERT INTO \"category\" (username, name, archived) " +
                         "VALUES (?, ?, ?)",
                 Statement.RETURN_GENERATED_KEYS
         )) {
@@ -48,7 +48,7 @@ public class CategoryDaoJdbc implements CategoryDao {
     @Override
     public Optional<CategoryEntity> findById(UUID id) {
         try (PreparedStatement ps = connection.prepareStatement(
-                "SELECT * FROM category WHERE id = ?"
+                "SELECT * FROM \"category\" WHERE id = ?"
         )) {
             ps.setObject(1, id);
             ps.execute(); // Делаем execute тк делаем SELECT a не INSERT
@@ -72,7 +72,7 @@ public class CategoryDaoJdbc implements CategoryDao {
     @Override
     public Optional<CategoryEntity> findByUsernameAndCategoryName(String username, String categoryName) {
         try (PreparedStatement ps = connection.prepareStatement(
-                "SELECT * FROM category WHERE username = ? AND name = ?"
+                "SELECT * FROM \"category\" WHERE username = ? AND name = ?"
         )) {
             ps.setString(1, username);
             ps.setString(2, categoryName);
@@ -97,7 +97,7 @@ public class CategoryDaoJdbc implements CategoryDao {
     @Override
     public List<CategoryEntity> findAllByUsername(String username) {
         try (PreparedStatement ps = connection.prepareStatement(
-                "SELECT * FROM category WHERE username = ? "
+                "SELECT * FROM \"category\" WHERE username = ? "
         )) {
             ps.setString(1, username);
             ps.execute();
@@ -121,7 +121,7 @@ public class CategoryDaoJdbc implements CategoryDao {
     @Override
     public void delete(CategoryEntity category) {
         try (PreparedStatement ps = connection.prepareStatement(
-                "DELETE FROM category WHERE id = ? "
+                "DELETE FROM \"category\" WHERE id = ? "
         )) {
             ps.setObject(1, category.getId());
             ps.executeUpdate();
@@ -133,13 +133,12 @@ public class CategoryDaoJdbc implements CategoryDao {
     @Override
     public CategoryEntity update(CategoryEntity category) {
         try (PreparedStatement ps = connection.prepareStatement(
-                "UPDATE category SET name = ?, username = ? ,archived = ? " +
+                "UPDATE \"category\" SET name = ?, archived = ? " +
                         "WHERE id = ?"
         )) {
             ps.setString(1, category.getName());
-            ps.setString(2, category.getUsername());
-            ps.setBoolean(3, category.isArchived());
-            ps.setObject(4, category.getId());
+            ps.setBoolean(2, category.isArchived());
+            ps.setObject(3, category.getId());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -147,4 +146,27 @@ public class CategoryDaoJdbc implements CategoryDao {
         return category;
     }
 
+    @Override
+    public List<CategoryEntity> findAll() {
+        try (PreparedStatement ps = connection.prepareStatement(
+                "SELECT * FROM \"category\" ")) {
+            ps.execute();
+            List<CategoryEntity> categoriesList = new ArrayList<>();
+            try (ResultSet rs = ps.getResultSet()) {
+                while (rs.next()) {
+                    CategoryEntity ce = new CategoryEntity();
+                    ce.setId(rs.getObject("id", UUID.class));
+                    ce.setUsername(rs.getString("username"));
+                    ce.setName(rs.getString("name"));
+                    ce.setArchived(rs.getBoolean("archived"));
+                    categoriesList.add(ce);
+                }
+                return categoriesList;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
+
+
