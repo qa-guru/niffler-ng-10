@@ -42,7 +42,7 @@ public class JdbcTest {
         UserJson user = userDbClient.create(
                 new UserJson(
                         null,
-                        "aleksanr_druz",
+                        "aleksanr_druz2",
                         "user-email-xa",
                         "user-password-xa",
                         "user-phone-xa",
@@ -53,21 +53,4 @@ public class JdbcTest {
         System.out.println(user);
     }
 
-    @Test
-    void springJdbcTest() {
-        UserDbClient userDbClient = new UserDbClient();
-        UserJson user = userDbClient.createUserSpringJdbc(
-                new UserJson(
-                        null,
-                        "valentin-1",
-                        null,
-                        null,
-                        null,
-                        CurrencyValues.RUB,
-                        null,
-                        null
-                )
-        );
-        System.out.println(user);
-    }
 }
