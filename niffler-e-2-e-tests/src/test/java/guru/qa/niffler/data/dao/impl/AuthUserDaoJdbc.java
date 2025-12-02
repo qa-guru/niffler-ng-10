@@ -76,6 +76,33 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     }
 
     @Override
+    public Optional<AuthUserEntity> findByUsername(String username) {
+        try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+                "SELECT * FROM \"user\" WHERE username = ?"
+        )) {
+            ps.setString(1, username);
+            ps.execute();
+            try (ResultSet rs = ps.getResultSet()) {
+                if (rs.next()) {
+                    AuthUserEntity ae = new AuthUserEntity();
+                    ae.setId(rs.getObject("id", UUID.class));
+                    ae.setUsername(rs.getString("username"));
+                    ae.setPassword(rs.getString("password"));
+                    ae.setEnabled(rs.getBoolean("enabled"));
+                    ae.setAccountNonExpired(rs.getBoolean("account_non_expired"));
+                    ae.setAccountNonLocked(rs.getBoolean("account_non_locked"));
+                    ae.setCredentialsNonExpired(rs.getBoolean("credentials_non_expired"));
+                    return Optional.of(ae);
+                } else {
+                    return Optional.empty();
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public List<AuthUserEntity> findAll() {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
                 "SELECT * FROM \"user\" ")) {
