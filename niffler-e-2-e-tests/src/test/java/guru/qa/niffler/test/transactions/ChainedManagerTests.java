@@ -4,7 +4,7 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.impl.AuthUserDaoSpringJdbc;
 import guru.qa.niffler.data.dao.impl.UserdataUserDaoSpringJdbc;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
-import guru.qa.niffler.data.entity.spend.UserEntity;
+import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.util.RandomDataUtils;
 import org.junit.jupiter.api.Test;
