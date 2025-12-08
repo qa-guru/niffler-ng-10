@@ -1,7 +1,9 @@
-package guru.qa.niffler.service;
+package guru.qa.niffler.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import guru.qa.niffler.api.GhApi;
+import guru.qa.niffler.service.RestClient;
+import io.qameta.allure.Step;
 import retrofit2.Response;
 
 import javax.annotation.Nonnull;
@@ -23,6 +25,7 @@ public final class GhApiClient extends RestClient {
     this.ghApi = create(GhApi.class);
   }
 
+  @Step("Get state of Github issue by given id: {issueNumber}")
   @Nonnull
   public String issueState(String issueNumber) {
     final Response<JsonNode> response;

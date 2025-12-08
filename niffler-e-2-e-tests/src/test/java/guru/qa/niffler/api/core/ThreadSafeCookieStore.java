@@ -1,7 +1,6 @@
 package guru.qa.niffler.api.core;
 
 import java.net.CookieManager;
-import java.net.CookiePolicy;
 import java.net.CookieStore;
 import java.net.HttpCookie;
 import java.net.URI;
@@ -44,16 +43,15 @@ public enum ThreadSafeCookieStore implements CookieStore {
     return cs.get().removeAll();
   }
 
-  public String xsrfCookie() {
-    return cs.get().getCookies()
-        .stream()
-        .filter(c -> c.getName().equals("XSRF-TOKEN"))
+  public String cookieValue(String cookieName) {
+    return getCookies().stream()
+        .filter(c -> c.getName().equals(cookieName))
+        .map(HttpCookie::getValue)
         .findFirst()
-        .get()
-        .getValue();
+        .orElseThrow();
   }
 
   private static CookieStore inMemoryCookieStore() {
-    return new CookieManager(null, CookiePolicy.ACCEPT_ALL).getCookieStore();
+    return new CookieManager().getCookieStore();
   }
 }

@@ -15,11 +15,10 @@ public interface AuthUserRepository {
 
   @Nonnull
   static AuthUserRepository getInstance() {
-    return switch (System.getProperty("repository", "jpa")) {
-      case "jpa" -> new AuthUserRepositoryHibernate();
+    return switch (System.getProperty("repository.impl", "jpa")) {
       case "jdbc" -> new AuthUserRepositoryJdbc();
-      case "sjdbc" -> new AuthUserRepositorySpringJdbc();
-      default -> throw new IllegalArgumentException("Unknown repository type: " + System.getProperty("repository"));
+      case "spring-jdbc" -> new AuthUserRepositorySpringJdbc();
+      default -> new AuthUserRepositoryHibernate();
     };
   }
 

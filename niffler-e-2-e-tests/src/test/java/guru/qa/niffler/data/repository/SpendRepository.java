@@ -5,22 +5,24 @@ import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.repository.impl.SpendRepositoryHibernate;
 import guru.qa.niffler.data.repository.impl.SpendRepositoryJdbc;
 import guru.qa.niffler.data.repository.impl.SpendRepositorySpringJdbc;
+import guru.qa.niffler.model.CurrencyValues;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @ParametersAreNonnullByDefault
 public interface SpendRepository {
-
   @Nonnull
   static SpendRepository getInstance() {
-    return switch (System.getProperty("repository", "jpa")) {
-      case "jpa" -> new SpendRepositoryHibernate();
+    return switch (System.getProperty("repository.impl", "jpa")) {
       case "jdbc" -> new SpendRepositoryJdbc();
-      case "sjdbc" -> new SpendRepositorySpringJdbc();
-      default -> throw new IllegalArgumentException("Unknown repository type: " + System.getProperty("repository"));
+      case "spring-jdbc" -> new SpendRepositorySpringJdbc();
+      default -> new SpendRepositoryHibernate();
     };
   }
 
@@ -29,6 +31,20 @@ public interface SpendRepository {
 
   @Nonnull
   SpendEntity update(SpendEntity spend);
+
+  @Nonnull
+  Optional<SpendEntity> findById(UUID id);
+
+  @Nonnull
+  Optional<SpendEntity> findByUsernameAndSpendDescription(String username, String description);
+
+  @Nonnull
+  List<SpendEntity> all(String username,
+                        @Nullable CurrencyValues currency,
+                        @Nullable Date from,
+                        @Nullable Date to);
+
+  void remove(SpendEntity spend);
 
   @Nonnull
   CategoryEntity createCategory(CategoryEntity category);
@@ -43,12 +59,7 @@ public interface SpendRepository {
   Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String name);
 
   @Nonnull
-  Optional<SpendEntity> findById(UUID id);
-
-  @Nonnull
-  Optional<SpendEntity> findByUsernameAndSpendDescription(String username, String description);
-
-  void remove(SpendEntity spend);
+  List<CategoryEntity> allCategories(String username);
 
   void removeCategory(CategoryEntity category);
 }

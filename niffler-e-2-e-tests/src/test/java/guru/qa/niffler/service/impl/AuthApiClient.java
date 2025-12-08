@@ -1,7 +1,8 @@
-package guru.qa.niffler.service;
+package guru.qa.niffler.service.impl;
 
 import guru.qa.niffler.api.AuthApi;
 import guru.qa.niffler.api.core.ThreadSafeCookieStore;
+import guru.qa.niffler.service.RestClient;
 import retrofit2.Response;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -23,7 +24,7 @@ public final class AuthApiClient extends RestClient {
         username,
         password,
         password,
-        ThreadSafeCookieStore.INSTANCE.xsrfCookie()
+        ThreadSafeCookieStore.INSTANCE.cookieValue("XSRF-TOKEN")
     ).execute();
   }
 }
