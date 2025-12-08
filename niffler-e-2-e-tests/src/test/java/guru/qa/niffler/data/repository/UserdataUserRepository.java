@@ -12,14 +12,12 @@ import java.util.UUID;
 
 @ParametersAreNonnullByDefault
 public interface UserdataUserRepository {
-
   @Nonnull
   static UserdataUserRepository getInstance() {
-    return switch (System.getProperty("repository", "jpa")) {
-      case "jpa" -> new UserdataUserRepositoryHibernate();
+    return switch (System.getProperty("repository.impl", "jpa")) {
       case "jdbc" -> new UserdataUserRepositoryJdbc();
-      case "sjdbc" -> new UserdataUserRepositorySpringJdbc();
-      default -> throw new IllegalArgumentException("Unknown repository type: " + System.getProperty("repository"));
+      case "spring-jdbc" -> new UserdataUserRepositorySpringJdbc();
+      default -> new UserdataUserRepositoryHibernate();
     };
   }
 

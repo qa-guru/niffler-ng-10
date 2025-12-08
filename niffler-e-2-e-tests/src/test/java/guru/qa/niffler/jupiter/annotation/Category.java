@@ -9,6 +9,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface Category {
   String name() default "";
-
   boolean archived() default false;
 }
