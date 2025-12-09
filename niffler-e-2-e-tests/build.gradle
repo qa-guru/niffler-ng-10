@@ -79,6 +79,7 @@ dependencies {
     testImplementation("com.squareup.retrofit2:retrofit:${retrofitVersion}") {
         exclude group: "com.squareup.okhttp3"
     }
+    testImplementation "com.squareup.retrofit2:converter-scalars:${retrofitVersion}"
     testImplementation("com.squareup.retrofit2:converter-jackson:${retrofitVersion}") {
         exclude group: "com.squareup.okhttp3"
     }

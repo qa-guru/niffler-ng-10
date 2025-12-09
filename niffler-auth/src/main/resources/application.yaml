@@ -59,17 +59,17 @@ logging:
   level:
     root: INFO
     org.springframework.kafka: INFO
-    org.springframework.web: INFO
+    org.springframework.web: DEBUG
     org.springframework.web.cors: INFO
     org.springframework.security.web.csrf: INFO
     org.springframework.security.web.authentication.logout: INFO
     org.springframework.security.web.webauthn: TRACE
-    org.springframework.security: INFO
-    org.springframework.web.servlet.handler: INFO
-    org.springframework.web.servlet.DispatcherServlet: INFO
-    org.springframework.security.oauth2: INFO
-    org.springframework.security.oauth2.server.authorization: INFO
-    org.apache.catalina.filters.RequestDumperFilter: INFO
+    org.springframework.security: DEBUG
+    org.springframework.web.servlet.handler: DEBUG
+    org.springframework.web.servlet.DispatcherServlet: DEBUG
+    org.springframework.security.oauth2: DEBUG
+    org.springframework.security.oauth2.server.authorization: DEBUG
+    org.apache.catalina.filters.RequestDumperFilter: DEBUG
     org.springframework.boot.autoconfigure: INFO
     org.apache.coyote.http11.Http11Processor: INFO
 
