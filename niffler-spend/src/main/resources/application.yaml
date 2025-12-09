@@ -34,6 +34,8 @@ spring:
     compatibility-verifier:
       enabled: false
 logging:
+  file:
+    path: ./logs/niffler-spend
   level:
     root: INFO
     org.springframework.web: INFO

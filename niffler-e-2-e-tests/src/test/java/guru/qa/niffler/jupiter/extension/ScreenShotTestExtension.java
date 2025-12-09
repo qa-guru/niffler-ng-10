@@ -17,6 +17,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.Base64;
 
@@ -37,11 +38,28 @@ public class ScreenShotTestExtension implements ParameterResolver, TestExecution
   @SneakyThrows
   @Override
   public BufferedImage resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-    return ImageIO.read(new ClassPathResource("img/expected-stat.png").getInputStream());
+    final ScreenShotTest screenShotTest = extensionContext.getRequiredTestMethod().getAnnotation(ScreenShotTest.class);
+    return ImageIO.read(
+        new ClassPathResource(
+            screenShotTest.value()
+        ).getInputStream()
+    );
   }
 
   @Override
   public void handleTestExecutionException(ExtensionContext context, Throwable throwable) throws Throwable {
+    final ScreenShotTest screenShotTest = context.getRequiredTestMethod().getAnnotation(ScreenShotTest.class);
+    if (screenShotTest.rewriteExpected()) {
+      final BufferedImage actual = getActual();
+      if (actual != null) {
+        ImageIO.write(
+            actual,
+            "png",
+            new File("src/test/resources/" + screenShotTest.value())
+        );
+      }
+    }
+
     ScreenDif screenDif = new ScreenDif(
         "data:image/png;base64," + encoder.encodeToString(imageToBytes(getExpected())),
         "data:image/png;base64," + encoder.encodeToString(imageToBytes(getActual())),

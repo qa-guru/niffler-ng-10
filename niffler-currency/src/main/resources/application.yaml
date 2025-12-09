@@ -39,6 +39,8 @@ spring:
     compatibility-verifier:
       enabled: false
 logging:
+  file:
+    path: ./logs/niffler-currency
   level:
     root: INFO
     org.springframework.web: INFO
