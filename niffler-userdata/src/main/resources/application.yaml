@@ -34,6 +34,8 @@ spring:
     compatibility-verifier:
       enabled: false
 logging:
+  file:
+    path: ./logs/niffler-userdata
   level:
     root: INFO
     org.springframework.kafka: INFO

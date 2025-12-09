@@ -59,7 +59,11 @@ public abstract class RestClient {
 
     clientBuilder
         .addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(level))
-        .addNetworkInterceptor(new AllureOkHttp3())
+        .addNetworkInterceptor(
+            new AllureOkHttp3()
+                .setRequestTemplate("http-request.ftl")
+                .setResponseTemplate("http-response.ftl")
+        )
         .cookieJar(
             new JavaNetCookieJar(
                 new CookieManager(

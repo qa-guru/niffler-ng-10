@@ -6,14 +6,23 @@ import io.qameta.allure.model.TestResult;
 import lombok.SneakyThrows;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Set;
 import java.util.UUID;
 
 @ParametersAreNonnullByDefault
 public class AllureBackendLogsExtension implements SuiteExtension {
 
-  public static final String caseName = "Niffler backend logs";
+  private static final String caseName = "Niffler backend logs";
+  private static final Set<String> services = Set.of(
+      "niffler-auth",
+      "niffler-currency",
+      "niffler-gateway",
+      "niffler-spend",
+      "niffler-userdata"
+  );
 
   @SneakyThrows
   @Override
@@ -23,16 +32,22 @@ public class AllureBackendLogsExtension implements SuiteExtension {
     allureLifecycle.scheduleTestCase(new TestResult().setUuid(caseId).setName(caseName));
     allureLifecycle.startTestCase(caseId);
 
-    allureLifecycle.addAttachment(
-        "Niffler-auth log",
-        "text/html",
-        ".log",
-        Files.newInputStream(
-            Path.of("./logs/niffler-auth/app.log")
-        )
-    );
+    for (String serviceName : services) {
+      addAttachmentForService(allureLifecycle, serviceName);
+    }
 
     allureLifecycle.stopTestCase(caseId);
     allureLifecycle.writeTestCase(caseId);
+  }
+
+  private static void addAttachmentForService(AllureLifecycle allureLifecycle, String serviceName) throws IOException {
+    allureLifecycle.addAttachment(
+        serviceName + " log",
+        "text/html",
+        ".log",
+        Files.newInputStream(
+            Path.of("./logs/" + serviceName + "/app.log")
+        )
+    );
   }
 }

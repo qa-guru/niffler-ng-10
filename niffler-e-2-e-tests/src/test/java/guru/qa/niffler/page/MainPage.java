@@ -31,6 +31,11 @@ public class MainPage extends BasePage<MainPage> {
     return spendingTable;
   }
 
+  @Nonnull
+  public StatComponent getStatComponent() {
+    return statComponent;
+  }
+
   @Step("Check that the page is loaded")
   @Nonnull
   public MainPage checkThatPageLoaded() {

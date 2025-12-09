@@ -1,18 +1,18 @@
 package guru.qa.niffler.page;
 
 import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.utils.ScreenDiffResult;
 import io.qameta.allure.Step;
-import org.springframework.core.io.ClassPathResource;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
+import java.util.Objects;
 
-import static com.codeborne.selenide.Condition.attribute;
 import static com.codeborne.selenide.Condition.attributeMatching;
 import static com.codeborne.selenide.Condition.disabled;
 import static com.codeborne.selenide.Condition.text;
@@ -20,6 +20,7 @@ import static com.codeborne.selenide.Condition.value;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @ParametersAreNonnullByDefault
 public class ProfilePage extends BasePage<ProfilePage> {
@@ -90,12 +91,14 @@ public class ProfilePage extends BasePage<ProfilePage> {
 
   @Step("Check photo")
   @Nonnull
-  public ProfilePage checkPhoto(String path) throws IOException {
-    final byte[] photoContent;
-    try (InputStream is = new ClassPathResource(path).getInputStream()) {
-      photoContent = Base64.getEncoder().encode(is.readAllBytes());
-    }
-    avatar.should(attribute("src", new String(photoContent, StandardCharsets.UTF_8)));
+  public ProfilePage checkPhoto(BufferedImage expected) throws IOException {
+    Selenide.sleep(1000);
+    BufferedImage actualImage = ImageIO.read(Objects.requireNonNull(avatar.screenshot()));
+    assertFalse(
+        new ScreenDiffResult(
+            actualImage, expected
+        )
+    );
     return this;
   }
 
