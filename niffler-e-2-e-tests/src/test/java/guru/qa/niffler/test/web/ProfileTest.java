@@ -1,6 +1,7 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
+import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.User;
@@ -57,16 +58,12 @@ public class ProfileTest {
   }
 
   @User
+  @ApiLogin
   @ScreenShotTest(value = "img/expected-avatar.png")
-  void shouldUpdateProfileWithAllFieldsSet(UserJson user, BufferedImage expectedAvatar) throws IOException {
+  void shouldUpdateProfileWithAllFieldsSet(BufferedImage expectedAvatar) throws IOException {
     final String newName = randomName();
 
-    ProfilePage profilePage = Selenide.open(LoginPage.URL, LoginPage.class)
-        .fillLoginPage(user.username(), user.testData().password())
-        .submit(new MainPage())
-        .checkThatPageLoaded()
-        .getHeader()
-        .toProfilePage()
+    ProfilePage profilePage = Selenide.open(ProfilePage.URL, ProfilePage.class)
         .uploadPhotoFromClasspath("img/cat.jpeg")
         .setName(newName)
         .submitProfile()
