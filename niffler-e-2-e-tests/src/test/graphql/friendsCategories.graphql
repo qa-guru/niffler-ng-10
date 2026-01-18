@@ -1,0 +1,14 @@
+query FriendsCategories{
+    user {
+        friends(page: 0, size: 5) {
+            edges {
+                node {
+                    username
+                    categories {
+                        name
+                    }
+                }
+            }
+        }
+    }
+}

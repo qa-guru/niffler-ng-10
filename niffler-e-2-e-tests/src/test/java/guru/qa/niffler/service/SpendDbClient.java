@@ -4,7 +4,6 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.repository.SpendRepository;
-import guru.qa.niffler.data.repository.impl.SpendRepositoryHibernate;
 import guru.qa.niffler.data.tpl.JdbcTransactionTemplate;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CategoryJson;
@@ -87,7 +86,12 @@ public final class SpendDbClient implements SpendClient {
 
     @Override
     public CategoryJson updateCategory(CategoryJson categoryJson) {
-        throw new UnsupportedOperationException("Not implemented :(");
+        return xaTxTemplate.execute(() -> CategoryJson.fromEntity(
+                        spendRepository.updateCategory(
+                                CategoryEntity.fromJson(categoryJson)
+                        )
+                )
+        );
     }
 
     @Override

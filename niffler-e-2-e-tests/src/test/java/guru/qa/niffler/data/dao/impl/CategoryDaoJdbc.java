@@ -49,6 +49,27 @@ public class CategoryDaoJdbc implements CategoryDao {
         }
     }
 
+    @Nonnull
+    @Override
+    public CategoryEntity updateCategory(CategoryEntity category) {
+        try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
+                "UPDATE category " +
+                        "SET name = ?, username = ?, archived = ? " +
+                        "WHERE id = ?"
+        )) {
+            ps.setObject(1, category.getName());
+            ps.setObject(2, category.getUsername());
+            ps.setObject(3, category.isArchived());
+            ps.setObject(4, category.getId());
+
+            ps.executeUpdate();
+
+            return category;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     @Nonnull
     public Optional<CategoryEntity> findById(UUID id) {

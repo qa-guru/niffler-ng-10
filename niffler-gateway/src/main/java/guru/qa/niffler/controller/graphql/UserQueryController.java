@@ -20,8 +20,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @PreAuthorize("isAuthenticated()")
@@ -88,6 +90,9 @@ public class UserQueryController {
   private void checkSubQueries(@Nonnull DataFetchingEnvironment env, int depth, @Nonnull String... queryKeys) {
     for (String queryKey : queryKeys) {
       List<SelectedField> selectors = env.getSelectionSet().getFieldsGroupedByResultKey().get(queryKey);
+      if (queryKey.equals("friends") && selectors.size() > 1){
+        throw new TooManySubQueriesException("Can`t fetch subquery for friends of user's friend");
+      }
       if (selectors != null && selectors.size() > depth) {
         throw new TooManySubQueriesException("Can`t fetch over 2 " + queryKey + " sub-queries");
       }

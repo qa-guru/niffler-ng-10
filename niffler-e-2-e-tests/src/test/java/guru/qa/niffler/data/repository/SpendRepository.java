@@ -34,6 +34,9 @@ public interface SpendRepository {
     CategoryEntity createCategory(CategoryEntity category);
 
     @Nonnull
+    CategoryEntity updateCategory(CategoryEntity category);
+
+    @Nonnull
     Optional<CategoryEntity> findCategoryById(UUID id);
 
     @Nonnull

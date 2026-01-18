@@ -6,7 +6,8 @@ import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
-import guru.qa.niffler.service.SpendDbClient;
+import guru.qa.niffler.service.SpendApiClient;
+import guru.qa.niffler.service.SpendClient;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
@@ -20,7 +21,7 @@ import static guru.qa.niffler.jupiter.extension.TestMethodContextExtension.conte
 public class SpendingExtension implements BeforeEachCallback, ParameterResolver {
 
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(SpendingExtension.class);
-    private final SpendDbClient spendClient = new SpendDbClient();
+    private final SpendClient spendClient = new SpendApiClient();
 
     @Override
     public void beforeEach(ExtensionContext context) {

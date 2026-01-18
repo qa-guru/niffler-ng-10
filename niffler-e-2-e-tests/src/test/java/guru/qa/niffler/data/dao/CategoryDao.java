@@ -15,6 +15,9 @@ public interface CategoryDao {
     CategoryEntity create(CategoryEntity category);
 
     @Nonnull
+    CategoryEntity updateCategory(CategoryEntity category);
+
+    @Nonnull
     Optional<CategoryEntity> findById(UUID id);
 
     @Nonnull

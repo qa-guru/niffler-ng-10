@@ -32,10 +32,28 @@ plugins {
     id 'io.qameta.allure' version '3.0.0'
     id 'io.qameta.allure-adapter' version '3.0.0'
     id 'com.github.edeandrea.xjc-generation' version '1.6'
+    id 'com.apollographql.apollo' version '4.3.3'
 }
 
 group = 'guru.qa'
 version = '2.1.4'
+
+apollo {
+    service("niffler"){
+        generateKotlinModels.set(false)
+        packageName.set("guru.qa")
+        srcDir("src/test/graphql")
+        mapScalar("Date", "java.util.Date")
+        introspection {
+            endpointUrl.set("$gatewayGraphqlUrl")
+            schemaFile.set(file("src/test/graphql/schema.graphqls"))
+        }
+        outputDirConnection {
+            connectToJavaSourceSet("test")
+        }
+    }
+}
+
 
 allure {
     version.set("${allureVersion}")
@@ -61,6 +79,7 @@ sourceSets {
         java {
             srcDir('src/test/java')
             srcDir("$buildDir/generated-sources/test/xjc")
+            srcDir("$buildDir/generated/source/apollo/niffler")
         }
     }
 }
@@ -113,6 +132,10 @@ dependencies {
     testImplementation 'com.google.code.findbugs:jsr305:3.0.2'
     testImplementation 'com.github.vertical-blank:sql-formatter:2.0.5'
     testImplementation 'com.github.h-thurow:simple-jndi:0.25.0'
+    // GraphQl
+    testImplementation 'com.apollographql.java:client:0.0.2'
+    testImplementation 'com.apollographql.java:rx2:0.0.2'
+    testImplementation 'com.apollographql.adapters:apollo-adapters-core-jvm:0.7.0'
     // gRPC
     testImplementation "io.grpc:grpc-api:${project.ext.grpcVersion}"
     testImplementation "io.grpc:grpc-stub:${project.ext.grpcVersion}"
@@ -142,4 +165,8 @@ tasks.register('printVersion') {
     doLast {
         println project.version
     }
+}
+
+tasks.named {it == "generateNifflerApolloSources"}.configureEach {
+    dependsOn("downloadNifflerApolloSchemaFromIntrospection")
 }

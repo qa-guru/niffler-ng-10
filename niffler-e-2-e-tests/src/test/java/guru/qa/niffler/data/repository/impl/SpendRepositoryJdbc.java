@@ -51,6 +51,12 @@ public class SpendRepositoryJdbc implements SpendRepository {
         return categoryDao.create(category);
     }
 
+    @Nonnull
+    @Override
+    public CategoryEntity updateCategory(CategoryEntity category) {
+        return categoryDao.updateCategory(category);
+    }
+
     @Override
     @Nonnull
     public Optional<CategoryEntity> findCategoryById(UUID id) {
