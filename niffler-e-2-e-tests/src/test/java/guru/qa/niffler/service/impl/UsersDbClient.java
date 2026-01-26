@@ -9,10 +9,12 @@ import guru.qa.niffler.data.jdbc.DataSources;
 import guru.qa.niffler.data.repository.AuthUserRepository;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
+import guru.qa.niffler.jupiter.extension.UserExtension;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.FriendshipStatus;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UsersClient;
+import io.qameta.allure.Step;
 import org.springframework.jdbc.support.JdbcTransactionManager;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -49,6 +51,7 @@ public class UsersDbClient implements UsersClient {
 
   @Nonnull
   @Override
+  @Step("Create user with username '{0}' using SQL INSERT")
   public UserJson createUser(String username, String password) {
     return requireNonNull(xaTransactionTemplate.execute(() -> {
           AuthUserEntity authUser = authUserEntity(username, password);
@@ -63,6 +66,7 @@ public class UsersDbClient implements UsersClient {
 
   @Nonnull
   @Override
+  @Step("Add {1} income invitation(s) for user using SQL INSERT")
   public List<UserJson> addIncomeInvitation(UserJson targetUser, int count) {
     final List<UserJson> result = new ArrayList<>();
     if (count > 0) {
@@ -72,14 +76,14 @@ public class UsersDbClient implements UsersClient {
       for (int i = 0; i < count; i++) {
         xaTransactionTemplate.execute(() -> {
               String username = randomUsername();
-              AuthUserEntity authUser = authUserEntity(username, "12345");
+              AuthUserEntity authUser = authUserEntity(username, UserExtension.DEFAULT_PASSWORD);
               authUserRepository.create(authUser);
               UserEntity adressee = userdataUserRepository.create(userEntity(username));
-          userdataUserRepository.addFriendshipRequest(adressee, targetEntity);
-          result.add(UserJson.fromEntity(
-              adressee,
-              FriendshipStatus.INVITE_RECEIVED
-          ));
+              userdataUserRepository.addFriendshipRequest(adressee, targetEntity);
+              result.add(UserJson.fromEntity(
+                  adressee,
+                  FriendshipStatus.INVITE_RECEIVED
+              ));
               return null;
             }
         );
@@ -90,6 +94,7 @@ public class UsersDbClient implements UsersClient {
 
   @Nonnull
   @Override
+  @Step("Add {1} outcome invitation(s) for user using SQL INSERT")
   public List<UserJson> addOutcomeInvitation(UserJson targetUser, int count) {
     final List<UserJson> result = new ArrayList<>();
     if (count > 0) {
@@ -100,14 +105,14 @@ public class UsersDbClient implements UsersClient {
       for (int i = 0; i < count; i++) {
         xaTransactionTemplate.execute(() -> {
               String username = randomUsername();
-              AuthUserEntity authUser = authUserEntity(username, "12345");
+              AuthUserEntity authUser = authUserEntity(username, UserExtension.DEFAULT_PASSWORD);
               authUserRepository.create(authUser);
               UserEntity adressee = userdataUserRepository.create(userEntity(username));
-          userdataUserRepository.addFriendshipRequest(targetEntity, adressee);
-          result.add(UserJson.fromEntity(
-              adressee,
-              FriendshipStatus.INVITE_RECEIVED
-          ));
+              userdataUserRepository.addFriendshipRequest(targetEntity, adressee);
+              result.add(UserJson.fromEntity(
+                  adressee,
+                  FriendshipStatus.INVITE_RECEIVED
+              ));
               return null;
             }
         );
@@ -118,6 +123,7 @@ public class UsersDbClient implements UsersClient {
 
   @Nonnull
   @Override
+  @Step("Add {1} friend(s) for user using SQL INSERT")
   public List<UserJson> addFriend(UserJson targetUser, int count) {
     final List<UserJson> result = new ArrayList<>();
     if (count > 0) {
@@ -128,14 +134,37 @@ public class UsersDbClient implements UsersClient {
       for (int i = 0; i < count; i++) {
         xaTransactionTemplate.execute(() -> {
               String username = randomUsername();
-              AuthUserEntity authUser = authUserEntity(username, "12345");
+              AuthUserEntity authUser = authUserEntity(username, UserExtension.DEFAULT_PASSWORD);
               authUserRepository.create(authUser);
               UserEntity adressee = userdataUserRepository.create(userEntity(username));
               userdataUserRepository.addFriend(targetEntity, adressee);
-          result.add(UserJson.fromEntity(
-              adressee,
-              FriendshipStatus.FRIEND
-          ));
+              result.add(UserJson.fromEntity(
+                  adressee,
+                  FriendshipStatus.FRIEND
+              ));
+              return null;
+            }
+        );
+      }
+    }
+    return result;
+  }
+
+  @Nonnull
+  @Override
+  @Step("Add {0} other people(s) for user using SQL INSERT")
+  public List<UserJson> addOtherPeoples(int count) {
+    final List<UserJson> result = new ArrayList<>();
+    if (count > 0) {
+      for (int i = 0; i < count; i++) {
+        xaTransactionTemplate.execute(() -> {
+              String username = randomUsername();
+              authUserRepository.create(authUserEntity(username, UserExtension.DEFAULT_PASSWORD));
+              UserEntity other = userdataUserRepository.create(userEntity(username));
+              result.add(UserJson.fromEntity(
+                  other,
+                  null
+              ));
               return null;
             }
         );

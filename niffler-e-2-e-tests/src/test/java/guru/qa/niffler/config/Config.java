@@ -12,6 +12,16 @@ public interface Config {
   }
 
   @Nonnull
+  default String testDatabaseUsername() {
+    return "postgres";
+  }
+
+  @Nonnull
+  default String testDatabasePassword() {
+    return "secret";
+  }
+
+  @Nonnull
   String frontUrl();
 
   @Nonnull

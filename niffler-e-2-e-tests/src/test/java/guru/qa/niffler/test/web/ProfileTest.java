@@ -7,8 +7,6 @@ import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.UserJson;
-import guru.qa.niffler.page.LoginPage;
-import guru.qa.niffler.page.MainPage;
 import guru.qa.niffler.page.ProfilePage;
 import org.junit.jupiter.api.Test;
 
@@ -21,37 +19,29 @@ import static guru.qa.niffler.utils.RandomDataUtils.randomName;
 @WebTest
 public class ProfileTest {
 
+  @Test
   @User(
       categories = @Category(
           archived = true
       )
   )
-  @Test
+  @ApiLogin
   void archivedCategoryShouldPresentInCategoriesList(UserJson user) {
     final String categoryName = user.testData().categoryDescriptions()[0];
-
-    Selenide.open(LoginPage.URL, LoginPage.class)
-        .fillLoginPage(user.username(), user.testData().password())
-        .submit(new MainPage())
-        .checkThatPageLoaded();
 
     Selenide.open(ProfilePage.URL, ProfilePage.class)
         .checkArchivedCategoryExists(categoryName);
   }
 
+  @Test
   @User(
       categories = @Category(
           archived = false
       )
   )
-  @Test
+  @ApiLogin
   void activeCategoryShouldPresentInCategoriesList(UserJson user) {
     final String categoryName = user.testData().categoryDescriptions()[0];
-
-    Selenide.open(LoginPage.URL, LoginPage.class)
-        .fillLoginPage(user.username(), user.testData().password())
-        .submit(new MainPage())
-        .checkThatPageLoaded();
 
     Selenide.open(ProfilePage.URL, ProfilePage.class)
         .checkCategoryExists(categoryName);
@@ -59,7 +49,7 @@ public class ProfileTest {
 
   @User
   @ApiLogin
-  @ScreenShotTest(value = "img/expected-avatar.png")
+  @ScreenShotTest("img/expected-avatar.png")
   void shouldUpdateProfileWithAllFieldsSet(BufferedImage expectedAvatar) throws IOException {
     final String newName = randomName();
 
@@ -76,42 +66,35 @@ public class ProfileTest {
         .checkPhoto(expectedAvatar);
   }
 
-  @User
   @Test
-  void shouldUpdateProfileWithOnlyRequiredFields(UserJson user) {
+  @User
+  @ApiLogin
+  void shouldUpdateProfileWithOnlyRequiredFields() {
     final String newName = randomName();
 
-    ProfilePage profilePage = Selenide.open(LoginPage.URL, LoginPage.class)
-        .fillLoginPage(user.username(), user.testData().password())
-        .submit(new MainPage())
-        .checkThatPageLoaded()
-        .getHeader()
-        .toProfilePage()
+    Selenide.open(ProfilePage.URL, ProfilePage.class)
         .setName(newName)
         .submitProfile()
         .checkAlert("Profile successfully updated");
 
     Selenide.refresh();
 
-    profilePage.checkName(newName);
+    new ProfilePage().checkName(newName);
   }
 
-  @User
   @Test
-  void shouldAddNewCategory(UserJson user) {
+  @User
+  @ApiLogin
+  void shouldAddNewCategory() {
     String newCategory = randomCategoryName();
 
-    Selenide.open(LoginPage.URL, LoginPage.class)
-        .fillLoginPage(user.username(), user.testData().password())
-        .submit(new MainPage())
-        .checkThatPageLoaded()
-        .getHeader()
-        .toProfilePage()
+    Selenide.open(ProfilePage.URL, ProfilePage.class)
         .addCategory(newCategory)
         .checkAlert("You've added new category:")
         .checkCategoryExists(newCategory);
   }
 
+  @Test
   @User(
       categories = {
           @Category(name = "Food"),
@@ -124,14 +107,9 @@ public class ProfileTest {
           @Category(name = "Books")
       }
   )
-  @Test
-  void shouldForbidAddingMoreThat8Categories(UserJson user) {
-    Selenide.open(LoginPage.URL, LoginPage.class)
-        .fillLoginPage(user.username(), user.testData().password())
-        .submit(new MainPage())
-        .checkThatPageLoaded()
-        .getHeader()
-        .toProfilePage()
+  @ApiLogin
+  void shouldForbidAddingMoreThat8Categories() {
+    Selenide.open(ProfilePage.URL, ProfilePage.class)
         .checkThatCategoryInputDisabled();
   }
 }

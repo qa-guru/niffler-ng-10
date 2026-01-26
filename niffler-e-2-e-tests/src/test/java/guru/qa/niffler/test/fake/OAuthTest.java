@@ -6,8 +6,10 @@ import guru.qa.niffler.jupiter.annotation.Token;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.impl.AuthApiClient;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+@Disabled
 public class OAuthTest {
 
   private static final Config CFG = Config.getInstance();

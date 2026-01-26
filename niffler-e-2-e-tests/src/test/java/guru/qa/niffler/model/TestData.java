@@ -6,26 +6,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ParametersAreNonnullByDefault
-public record TestData(@Nonnull String password,
-                       @Nonnull List<UserJson> incomeInvitations,
-                       @Nonnull List<UserJson> outcomeInvitations,
-                       @Nonnull List<UserJson> friends,
-                       @Nonnull List<CategoryJson> categories,
-                       @Nonnull List<SpendJson> spendings
+public record TestData(
+    @Nonnull String password,
+    @Nonnull List<UserJson> others,
+    @Nonnull List<UserJson> friends,
+    @Nonnull List<UserJson> incomeInvitations,
+    @Nonnull List<UserJson> outcomeInvitations,
+    @Nonnull List<CategoryJson> categories,
+    @Nonnull List<SpendJson> spendings
 ) {
 
   public TestData(String password) {
-    this(password, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+    this(password, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
   }
 
-  public TestData(String password, List<UserJson> friends, List<UserJson> incomeInvitations, List<UserJson> outcomeInvitations) {
-    this(password, friends, incomeInvitations, outcomeInvitations, new ArrayList<>(), new ArrayList<>());
+  public TestData(String password, List<UserJson> others, List<UserJson> friends, List<UserJson> incomeInvitations, List<UserJson> outcomeInvitations) {
+    this(password, others, friends, incomeInvitations, outcomeInvitations, new ArrayList<>(), new ArrayList<>());
   }
 
   @Nonnull
   public TestData addCategories(List<CategoryJson> categories) {
     return new TestData(
         this.password,
+        this.others,
         this.friends,
         this.incomeInvitations,
         this.outcomeInvitations,
@@ -38,12 +41,18 @@ public record TestData(@Nonnull String password,
   public TestData addSpendings(List<SpendJson> spendings) {
     return new TestData(
         this.password,
+        this.others,
         this.friends,
         this.incomeInvitations,
         this.outcomeInvitations,
         this.categories,
         spendings
     );
+  }
+
+  @Nonnull
+  public String[] othersUsernames() {
+    return extractUsernames(others);
   }
 
   @Nonnull

@@ -2,6 +2,7 @@ package guru.qa.niffler.data.jdbc;
 
 import com.atomikos.jdbc.AtomikosDataSourceBean;
 import com.p6spy.engine.spy.P6DataSource;
+import guru.qa.niffler.config.Config;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
@@ -15,11 +16,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @ParametersAreNonnullByDefault
 public class DataSources {
+  private static final Config CFG = Config.getInstance();
+  private static final Map<String, DataSource> dataSources = new ConcurrentHashMap<>();
+
   private DataSources() {
   }
 
-  private static final Map<String, DataSource> dataSources = new ConcurrentHashMap<>();
-
+  @Nonnull
   public static DataSource dataSource(String jdbcUrl) {
     return dataSources.computeIfAbsent(
         jdbcUrl,
@@ -30,8 +33,8 @@ public class DataSources {
           dsBean.setXaDataSourceClassName("org.postgresql.xa.PGXADataSource");
           Properties props = new Properties();
           props.put("URL", jdbcUrl);
-          props.put("user", "postgres");
-          props.put("password", "secret");
+          props.put("user", CFG.testDatabaseUsername());
+          props.put("password", CFG.testDatabasePassword());
           dsBean.setXaProperties(props);
           dsBean.setPoolSize(3);
           dsBean.setMaxPoolSize(10);

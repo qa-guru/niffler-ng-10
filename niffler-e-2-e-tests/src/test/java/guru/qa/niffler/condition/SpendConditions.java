@@ -2,10 +2,11 @@ package guru.qa.niffler.condition;
 
 import com.codeborne.selenide.CheckResult;
 import com.codeborne.selenide.Driver;
-import com.codeborne.selenide.WebElementCondition;
 import com.codeborne.selenide.WebElementsCondition;
-import guru.qa.niffler.model.Bubble;
+import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.utils.DateUtils;
 import org.jetbrains.annotations.NotNull;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import javax.annotation.Nonnull;
@@ -21,31 +22,15 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 @ParametersAreNonnullByDefault
-public class StatConditions {
+public class SpendConditions {
 
   @Nonnull
-  public static WebElementCondition statBubble(Bubble expected) {
-    return new WebElementCondition(expected.color().rgb + " - '" + expected.text() + "'") {
-      @NotNull
-      @Override
-      public CheckResult check(Driver driver, WebElement element) {
-        final String rgba = element.getCssValue("background-color");
-        final String text = element.getText();
-        return new CheckResult(
-            expected.color().rgb.equals(rgba) && expected.text().equals(text),
-            rgba + " - '" + text + "'"
-        );
-      }
-    };
+  public static WebElementsCondition haveSpendings(SpendJson... expected) {
+    return haveSpendings(List.of(expected));
   }
 
   @Nonnull
-  public static WebElementsCondition statBubble(Bubble... expected) {
-    return statBubble(List.of(expected));
-  }
-
-  @Nonnull
-  public static WebElementsCondition statBubble(List<Bubble> expected) {
+  public static WebElementsCondition haveSpendings(List<SpendJson> expected) {
     return new WebElementsCondition() {
 
       private final List<String> expectedElements = mapExpectedElements(toList(), expected);
@@ -62,7 +47,7 @@ public class StatConditions {
 
         if (!expectedElements.equals(actualElements)) {
           final String message = String.format(
-              "Bubbles list mismatch (expected: %s, actual: %s)", expectedElements, actualElements
+              "Spendings list mismatch (expected: %s, actual: %s)", expectedElements, actualElements
           );
           return rejected(message, actualElements);
         }
@@ -78,12 +63,12 @@ public class StatConditions {
   }
 
   @Nonnull
-  public static WebElementsCondition statBubbleInAnyOrder(Bubble... expected) {
-    return statBubbleInAnyOrder(List.of(expected));
+  public static WebElementsCondition haveSpendingsInAnyOrder(SpendJson... expected) {
+    return haveSpendingsInAnyOrder(List.of(expected));
   }
 
   @Nonnull
-  public static WebElementsCondition statBubbleInAnyOrder(List<Bubble> expected) {
+  public static WebElementsCondition haveSpendingsInAnyOrder(List<SpendJson> expected) {
     return new WebElementsCondition() {
 
       private final Set<String> expectedElements = mapExpectedElements(toSet(), expected);
@@ -100,7 +85,7 @@ public class StatConditions {
 
         if (!expectedElements.equals(actualElements)) {
           final String message = String.format(
-              "Bubbles list mismatch (expected: %s, actual: %s)", expectedElements, actualElements
+              "Spendings list mismatch (expected: %s, actual: %s)", expectedElements, actualElements
           );
           return rejected(message, actualElements);
         }
@@ -108,7 +93,6 @@ public class StatConditions {
         return accepted();
       }
 
-      @Nonnull
       @Override
       public String toString() {
         return expectedElements.toString();
@@ -117,12 +101,12 @@ public class StatConditions {
   }
 
   @Nonnull
-  public static WebElementsCondition containsStatBubble(Bubble... expected) {
-    return containsStatBubble(List.of(expected));
+  public static WebElementsCondition containsSpending(SpendJson... expected) {
+    return containsSpending(List.of(expected));
   }
 
   @Nonnull
-  public static WebElementsCondition containsStatBubble(List<Bubble> expected) {
+  public static WebElementsCondition containsSpending(List<SpendJson> expected) {
     return new WebElementsCondition() {
 
       private final Set<String> expectedElements = mapExpectedElements(toSet(), expected);
@@ -134,7 +118,7 @@ public class StatConditions {
 
         if (!actualElements.containsAll(expectedElements)) {
           final String message = String.format(
-              "Bubbles list is missing some expected elements (expected: %s, actual: %s)", expectedElements, actualElements
+              "Spendings list is missing some expected elements (expected: %s, actual: %s)", expectedElements, actualElements
           );
           return rejected(message, actualElements);
         }
@@ -151,20 +135,31 @@ public class StatConditions {
   }
 
   @Nonnull
-  private static <T extends Collection<String>> T mapExpectedElements(Collector<String, ?, T> collector, List<Bubble> expected) {
+  private static <T extends Collection<String>> T mapExpectedElements(Collector<String, ?, T> collector, List<SpendJson> expected) {
     if (expected.isEmpty()) {
-      throw new IllegalArgumentException("No expected bubbles given");
+      throw new IllegalArgumentException("No expected spendings given");
     }
 
     return expected.stream()
-        .map(c -> c.color().rgb + " - '" + c.text() + "'")
+        .map(s -> "Category: '" + s.category().name() + "' , Spend: " + s.amount() + " " + s.currency().symbol + " - " + s.description() + " - " + DateUtils.getDateAsString(s.spendDate(), "MMM d, yyyy"))
         .collect(collector);
   }
 
   @Nonnull
   private static <T extends Collection<String>> T mapActualElements(Collector<String, ?, T> collector, List<WebElement> elements) {
     return elements.stream()
-        .map(e -> e.getCssValue("background-color") + " - '" + e.getText() + "'")
+        .map(e -> {
+          final List<WebElement> cells = e.findElements(By.cssSelector("td"));
+
+          final String category = cells.get(1).getText();
+          final String amount = cells.get(2).getText();
+          final String description = cells.get(3).getText();
+          final String date = cells.get(4).getText();
+          final double amountValue = Double.parseDouble(amount.split("\\s+")[0]);
+          final String amountSymbol = amount.split("\\s+")[1];
+
+          return "Category: '" + category + "' , Spend: " + amountValue + " " + amountSymbol + " - " + description + " - " + date;
+        })
         .collect(collector);
   }
 }

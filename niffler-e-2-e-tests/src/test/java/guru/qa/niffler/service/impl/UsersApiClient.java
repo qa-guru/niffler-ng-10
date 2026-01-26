@@ -4,6 +4,7 @@ import guru.qa.niffler.api.AuthApi;
 import guru.qa.niffler.api.UserdataApi;
 import guru.qa.niffler.api.core.ThreadSafeCookieStore;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.jupiter.extension.UserExtension;
 import guru.qa.niffler.model.TestData;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.RestClient;
@@ -26,14 +27,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class UsersApiClient implements UsersClient {
 
   private static final Config CFG = Config.getInstance();
-  private static final String defaultPassword = "12345";
 
   private final AuthApi authApi = new RestClient.EmtyRestClient(CFG.authUrl()).create(AuthApi.class);
   private final UserdataApi userdataApi = new RestClient.EmtyRestClient(CFG.userdataUrl()).create(UserdataApi.class);
 
   @NotNull
   @Override
-  @Step("Crete user using API")
+  @Step("Create user with username '{0}' using REST API")
   public UserJson createUser(String username, String password) {
     try {
       authApi.requestRegisterForm().execute();
@@ -56,6 +56,7 @@ public class UsersApiClient implements UsersClient {
 
   @Nonnull
   @Override
+  @Step("Add {1} income invitation(s) for user using REST API")
   public List<UserJson> addIncomeInvitation(UserJson targetUser, int count) {
     final List<UserJson> result = new ArrayList<>();
     if (count > 0) {
@@ -64,7 +65,7 @@ public class UsersApiClient implements UsersClient {
         final Response<UserJson> response;
         final UserJson newUser;
         try {
-          newUser = createUser(username, defaultPassword);
+          newUser = createUser(username, UserExtension.DEFAULT_PASSWORD);
           result.add(newUser);
           response = userdataApi.sendInvitation(
               newUser.username(),
@@ -85,6 +86,7 @@ public class UsersApiClient implements UsersClient {
 
   @Nonnull
   @Override
+  @Step("Add {1} outcome invitation(s) for user using REST API")
   public List<UserJson> addOutcomeInvitation(UserJson targetUser, int count) {
     final List<UserJson> result = new ArrayList<>();
     if (count > 0) {
@@ -93,7 +95,7 @@ public class UsersApiClient implements UsersClient {
         final Response<UserJson> response;
         final UserJson newUser;
         try {
-          newUser = createUser(username, defaultPassword);
+          newUser = createUser(username, UserExtension.DEFAULT_PASSWORD);
           result.add(newUser);
           response = userdataApi.sendInvitation(
               targetUser.username(),
@@ -114,6 +116,7 @@ public class UsersApiClient implements UsersClient {
 
   @Nonnull
   @Override
+  @Step("Add {1} friend(s) for user using REST API")
   public List<UserJson> addFriend(UserJson targetUser, int count) {
     final List<UserJson> result = new ArrayList<>();
     if (count > 0) {
@@ -122,7 +125,7 @@ public class UsersApiClient implements UsersClient {
         final Response<UserJson> response;
         final UserJson newUser;
         try {
-          newUser = createUser(username, defaultPassword);
+          newUser = createUser(username, UserExtension.DEFAULT_PASSWORD);
           result.add(newUser);
           userdataApi.sendInvitation(
               newUser.username(),
@@ -137,6 +140,20 @@ public class UsersApiClient implements UsersClient {
         targetUser.testData()
             .friends()
             .add(response.body());
+      }
+    }
+    return result;
+  }
+
+  @Nonnull
+  @Override
+  @Step("Add {0} other people(s) for user using REST API")
+  public List<UserJson> addOtherPeoples(int count) {
+    final List<UserJson> result = new ArrayList<>();
+    if (count > 0) {
+      for (int i = 0; i < count; i++) {
+        final UserJson newUser = createUser(randomUsername(), UserExtension.DEFAULT_PASSWORD);
+        result.add(newUser);
       }
     }
     return result;
