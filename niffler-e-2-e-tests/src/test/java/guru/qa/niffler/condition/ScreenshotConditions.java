@@ -31,7 +31,7 @@ public class ScreenshotConditions {
       @Override
       public CheckResult check(Driver driver, WebElement element) {
         ScreenDiffResult screenDiffResult = new ScreenDiffResult(
-            chartScreenshot(driver, element),
+            actualScreenshot(driver, element),
             expectedImage
         );
         return new CheckResult(
@@ -41,7 +41,7 @@ public class ScreenshotConditions {
       }
 
       @SneakyThrows
-      private BufferedImage chartScreenshot(Driver driver, WebElement element) {
+      private BufferedImage actualScreenshot(Driver driver, WebElement element) {
         return ImageIO.read(requireNonNull(
             screenshots.takeScreenshot(
                 driver,
