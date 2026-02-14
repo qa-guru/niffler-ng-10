@@ -1,35 +1,35 @@
 type Category {
-    id: ID!
+  id: ID!
 
-    name: String!
+  name: String!
 
-    username: String!
+  username: String!
 
-    archived: Boolean!
+  archived: Boolean!
 }
 
 input CategoryInput {
-    id: ID
+  id: ID
 
-    name: String!
+  name: String!
 
-    archived: Boolean!
+  archived: Boolean!
 }
 
 type Currency {
-    currency: CurrencyValues!
+  currency: CurrencyValues!
 
-    currencyRate: Float!
+  currencyRate: Float!
 }
 
 enum CurrencyValues {
-    RUB
+  RUB
 
-    USD
+  USD
 
-    EUR
+  EUR
 
-    KZT
+  KZT
 }
 
 """
@@ -38,187 +38,187 @@ A Java Date type
 scalar Date
 
 input FcmTokenInput {
-    token: String!
+  token: String!
 
-    userAgent: String!
+  userAgent: String!
 }
 
 enum FilterPeriod {
-    TODAY
+  TODAY
 
-    WEEK
+  WEEK
 
-    MONTH
+  MONTH
 }
 
 enum FriendshipAction {
-    ADD
+  ADD
 
-    ACCEPT
+  ACCEPT
 
-    REJECT
+  REJECT
 
-    DELETE
+  DELETE
 }
 
 input FriendshipInput {
-    username: String!
+  username: String!
 
-    action: FriendshipAction!
+  action: FriendshipAction!
 }
 
 enum FriendshipStatus {
-    INVITE_SENT
+  INVITE_SENT
 
-    INVITE_RECEIVED
+  INVITE_RECEIVED
 
-    FRIEND
+  FRIEND
 }
 
 type Mutation {
-    user(input: UserInput!): User!
+  user(input: UserInput!): User!
 
-    category(input: CategoryInput!): Category!
+  category(input: CategoryInput!): Category!
 
-    spend(input: SpendInput!): Spend!
+  spend(input: SpendInput!): Spend!
 
-    deleteSpend(ids: [ID!]!): [ID!]!
+  deleteSpend(ids: [ID!]!): [ID!]!
 
-    friendship(input: FriendshipInput!): User!
+  friendship(input: FriendshipInput!): User!
 
-    fcmToken(input: FcmTokenInput!): Void
+  fcmToken(input: FcmTokenInput!): Void
 }
 
 type PageInfo {
-    hasPreviousPage: Boolean!
+  hasPreviousPage: Boolean!
 
-    hasNextPage: Boolean!
+  hasNextPage: Boolean!
 
-    startCursor: String
+  startCursor: String
 
-    endCursor: String
+  endCursor: String
 }
 
 type Query {
-    session: Session!
+  session: Session!
 
-    spend(id: ID!): Spend!
+  spend(id: ID!): Spend!
 
-    currencies: [Currency!]!
+  currencies: [Currency!]!
 
-    user: User!
+  user: User!
 
-    allPeople(page: Int!, size: Int!, sort: [String!], searchQuery: String): UserConnection
+  allPeople(page: Int!, size: Int!, sort: [String!], searchQuery: String): UserConnection
 
-    spends(page: Int!, size: Int!, sort: [String!], searchQuery: String, filterPeriod: FilterPeriod, filterCurrency: CurrencyValues): SpendConnection
+  spends(page: Int!, size: Int!, sort: [String!], searchQuery: String, filterPeriod: FilterPeriod, filterCurrency: CurrencyValues): SpendConnection
 
-    stat(filterPeriod: FilterPeriod, filterCurrency: CurrencyValues, statCurrency: CurrencyValues): Statistic!
+  stat(filterPeriod: FilterPeriod, filterCurrency: CurrencyValues, statCurrency: CurrencyValues): Statistic!
 }
 
 type Session {
-    username: String
+  username: String
 
-    issuedAt: Date
+  issuedAt: Date
 
-    expiresAt: Date
+  expiresAt: Date
 }
 
 type Spend {
-    id: ID!
+  id: ID!
 
-    spendDate: Date!
+  spendDate: Date!
 
-    category: Category!
+  category: Category!
 
-    currency: CurrencyValues!
+  currency: CurrencyValues!
 
-    amount: Float!
+  amount: Float!
 
-    description: String
+  description: String
 
-    username: String
+  username: String
 }
 
 type SpendConnection {
-    edges: [SpendEdge]!
+  edges: [SpendEdge]!
 
-    pageInfo: PageInfo!
+  pageInfo: PageInfo!
 }
 
 type SpendEdge {
-    cursor: String!
+  cursor: String!
 
-    node: Spend!
+  node: Spend!
 }
 
 input SpendInput {
-    id: ID
+  id: ID
 
-    spendDate: Date!
+  spendDate: Date!
 
-    category: CategoryInput!
+  category: CategoryInput!
 
-    currency: CurrencyValues!
+  currency: CurrencyValues!
 
-    amount: Float!
+  amount: Float!
 
-    description: String
+  description: String
 }
 
 type Statistic {
-    total: Float!
+  total: Float!
 
-    currency: CurrencyValues!
+  currency: CurrencyValues!
 
-    statByCategories: [SumByCategory!]!
+  statByCategories: [SumByCategory!]!
 }
 
 type SumByCategory {
-    categoryName: String!
+  categoryName: String!
 
-    currency: CurrencyValues!
+  currency: CurrencyValues!
 
-    sum: Float!
+  sum: Float!
 
-    firstSpendDate: Date!
+  firstSpendDate: Date!
 
-    lastSpendDate: Date!
+  lastSpendDate: Date!
 }
 
 type User {
-    id: ID!
+  id: ID!
 
-    username: String!
+  username: String!
 
-    fullname: String
+  fullname: String
 
-    photo: String
+  photo: String
 
-    photoSmall: String
+  photoSmall: String
 
-    friendshipStatus: FriendshipStatus
+  friendshipStatus: FriendshipStatus
 
-    categories: [Category!]!
+  categories: [Category!]!
 
-    friends(page: Int!, size: Int!, sort: [String!], searchQuery: String): UserConnection
+  friends(page: Int!, size: Int!, sort: [String!], searchQuery: String): UserConnection
 }
 
 type UserConnection {
-    edges: [UserEdge]!
+  edges: [UserEdge]!
 
-    pageInfo: PageInfo!
+  pageInfo: PageInfo!
 }
 
 type UserEdge {
-    cursor: String!
+  cursor: String!
 
-    node: User!
+  node: User!
 }
 
 input UserInput {
-    fullname: String
+  fullname: String
 
-    photo: String
+  photo: String
 }
 
 """
@@ -227,262 +227,262 @@ A custom scalar that represents the null value
 scalar Void
 
 type __Directive {
-    """
-    The __Directive type represents a Directive that a server supports.
-    """
-    name: String!
+  """
+  The __Directive type represents a Directive that a server supports.
+  """
+  name: String!
 
-    description: String
+  description: String
 
-    isRepeatable: Boolean!
+  isRepeatable: Boolean!
 
-    locations: [__DirectiveLocation!]!
+  locations: [__DirectiveLocation!]!
 
-    args(includeDeprecated: Boolean = false): [__InputValue!]!
+  args(includeDeprecated: Boolean = false): [__InputValue!]!
 }
 
 """
 An enum describing valid locations where a directive can be placed
 """
 enum __DirectiveLocation {
-    """
-    Indicates the directive is valid on queries.
-    """
-    QUERY
+  """
+  Indicates the directive is valid on queries.
+  """
+  QUERY
 
-    """
-    Indicates the directive is valid on mutations.
-    """
-    MUTATION
+  """
+  Indicates the directive is valid on mutations.
+  """
+  MUTATION
 
-    """
-    Indicates the directive is valid on subscriptions.
-    """
-    SUBSCRIPTION
+  """
+  Indicates the directive is valid on subscriptions.
+  """
+  SUBSCRIPTION
 
-    """
-    Indicates the directive is valid on fields.
-    """
-    FIELD
+  """
+  Indicates the directive is valid on fields.
+  """
+  FIELD
 
-    """
-    Indicates the directive is valid on fragment definitions.
-    """
-    FRAGMENT_DEFINITION
+  """
+  Indicates the directive is valid on fragment definitions.
+  """
+  FRAGMENT_DEFINITION
 
-    """
-    Indicates the directive is valid on fragment spreads.
-    """
-    FRAGMENT_SPREAD
+  """
+  Indicates the directive is valid on fragment spreads.
+  """
+  FRAGMENT_SPREAD
 
-    """
-    Indicates the directive is valid on inline fragments.
-    """
-    INLINE_FRAGMENT
+  """
+  Indicates the directive is valid on inline fragments.
+  """
+  INLINE_FRAGMENT
 
-    """
-    Indicates the directive is valid on variable definitions.
-    """
-    VARIABLE_DEFINITION
+  """
+  Indicates the directive is valid on variable definitions.
+  """
+  VARIABLE_DEFINITION
 
-    """
-    Indicates the directive is valid on a schema SDL definition.
-    """
-    SCHEMA
+  """
+  Indicates the directive is valid on a schema SDL definition.
+  """
+  SCHEMA
 
-    """
-    Indicates the directive is valid on a scalar SDL definition.
-    """
-    SCALAR
+  """
+  Indicates the directive is valid on a scalar SDL definition.
+  """
+  SCALAR
 
-    """
-    Indicates the directive is valid on an object SDL definition.
-    """
-    OBJECT
+  """
+  Indicates the directive is valid on an object SDL definition.
+  """
+  OBJECT
 
-    """
-    Indicates the directive is valid on a field SDL definition.
-    """
-    FIELD_DEFINITION
+  """
+  Indicates the directive is valid on a field SDL definition.
+  """
+  FIELD_DEFINITION
 
-    """
-    Indicates the directive is valid on a field argument SDL definition.
-    """
-    ARGUMENT_DEFINITION
+  """
+  Indicates the directive is valid on a field argument SDL definition.
+  """
+  ARGUMENT_DEFINITION
 
-    """
-    Indicates the directive is valid on an interface SDL definition.
-    """
-    INTERFACE
+  """
+  Indicates the directive is valid on an interface SDL definition.
+  """
+  INTERFACE
 
-    """
-    Indicates the directive is valid on an union SDL definition.
-    """
-    UNION
+  """
+  Indicates the directive is valid on an union SDL definition.
+  """
+  UNION
 
-    """
-    Indicates the directive is valid on an enum SDL definition.
-    """
-    ENUM
+  """
+  Indicates the directive is valid on an enum SDL definition.
+  """
+  ENUM
 
-    """
-    Indicates the directive is valid on an enum value SDL definition.
-    """
-    ENUM_VALUE
+  """
+  Indicates the directive is valid on an enum value SDL definition.
+  """
+  ENUM_VALUE
 
-    """
-    Indicates the directive is valid on an input object SDL definition.
-    """
-    INPUT_OBJECT
+  """
+  Indicates the directive is valid on an input object SDL definition.
+  """
+  INPUT_OBJECT
 
-    """
-    Indicates the directive is valid on an input object field SDL definition.
-    """
-    INPUT_FIELD_DEFINITION
+  """
+  Indicates the directive is valid on an input object field SDL definition.
+  """
+  INPUT_FIELD_DEFINITION
 }
 
 type __EnumValue {
-    name: String!
+  name: String!
 
-    description: String
+  description: String
 
-    isDeprecated: Boolean!
+  isDeprecated: Boolean!
 
-    deprecationReason: String
+  deprecationReason: String
 }
 
 type __Field {
-    name: String!
+  name: String!
 
-    description: String
+  description: String
 
-    args(includeDeprecated: Boolean = false): [__InputValue!]!
+  args(includeDeprecated: Boolean = false): [__InputValue!]!
 
-    type: __Type!
+  type: __Type!
 
-    isDeprecated: Boolean!
+  isDeprecated: Boolean!
 
-    deprecationReason: String
+  deprecationReason: String
 }
 
 type __InputValue {
-    name: String!
+  name: String!
 
-    description: String
+  description: String
 
-    type: __Type!
+  type: __Type!
 
-    defaultValue: String
+  defaultValue: String
 
-    isDeprecated: Boolean
+  isDeprecated: Boolean
 
-    deprecationReason: String
+  deprecationReason: String
 }
 
 """
 A GraphQL Introspection defines the capabilities of a GraphQL server. It exposes all available types and directives on the server, the entry points for query, mutation, and subscription operations.
 """
 type __Schema {
-    description: String
+  description: String
 
-    """
-    A list of all types supported by this server.
-    """
-    types: [__Type!]!
+  """
+  A list of all types supported by this server.
+  """
+  types: [__Type!]!
 
-    """
-    The type that query operations will be rooted at.
-    """
-    queryType: __Type!
+  """
+  The type that query operations will be rooted at.
+  """
+  queryType: __Type!
 
-    """
-    If this server supports mutation, the type that mutation operations will be rooted at.
-    """
-    mutationType: __Type
+  """
+  If this server supports mutation, the type that mutation operations will be rooted at.
+  """
+  mutationType: __Type
 
-    """
-    'A list of all directives supported by this server.
-    """
-    directives: [__Directive!]!
+  """
+  'A list of all directives supported by this server.
+  """
+  directives: [__Directive!]!
 
-    """
-    'If this server support subscription, the type that subscription operations will be rooted at.
-    """
-    subscriptionType: __Type
+  """
+  'If this server support subscription, the type that subscription operations will be rooted at.
+  """
+  subscriptionType: __Type
 }
 
 type __Type {
-    kind: __TypeKind!
+  kind: __TypeKind!
 
-    name: String
+  name: String
 
-    description: String
+  description: String
 
-    fields(includeDeprecated: Boolean = false): [__Field!]
+  fields(includeDeprecated: Boolean = false): [__Field!]
 
-    interfaces: [__Type!]
+  interfaces: [__Type!]
 
-    possibleTypes: [__Type!]
+  possibleTypes: [__Type!]
 
-    enumValues(includeDeprecated: Boolean = false): [__EnumValue!]
+  enumValues(includeDeprecated: Boolean = false): [__EnumValue!]
 
-    inputFields(includeDeprecated: Boolean = false): [__InputValue!]
+  inputFields(includeDeprecated: Boolean = false): [__InputValue!]
 
-    ofType: __Type
+  ofType: __Type
 
-    """
-    This field is considered experimental because it has not yet been ratified in the graphql specification
-    """
-    isOneOf: Boolean
+  """
+  This field is considered experimental because it has not yet been ratified in the graphql specification
+  """
+  isOneOf: Boolean
 
-    specifiedByURL: String
+  specifiedByURL: String
 
-    specifiedByUrl: String @deprecated(reason: "This legacy name has been replaced by `specifiedByURL`")
+  specifiedByUrl: String @deprecated(reason: "This legacy name has been replaced by `specifiedByURL`")
 }
 
 """
 An enum describing what kind of type a given __Type is
 """
 enum __TypeKind {
-    """
-    Indicates this type is a scalar. 'specifiedByURL' is a valid field
-    """
-    SCALAR
+  """
+  Indicates this type is a scalar. 'specifiedByURL' is a valid field
+  """
+  SCALAR
 
-    """
-    Indicates this type is an object. `fields` and `interfaces` are valid fields.
-    """
-    OBJECT
+  """
+  Indicates this type is an object. `fields` and `interfaces` are valid fields.
+  """
+  OBJECT
 
-    """
-    Indicates this type is an interface. `fields` and `possibleTypes` are valid fields.
-    """
-    INTERFACE
+  """
+  Indicates this type is an interface. `fields` and `possibleTypes` are valid fields.
+  """
+  INTERFACE
 
-    """
-    Indicates this type is a union. `possibleTypes` is a valid field.
-    """
-    UNION
+  """
+  Indicates this type is a union. `possibleTypes` is a valid field.
+  """
+  UNION
 
-    """
-    Indicates this type is an enum. `enumValues` is a valid field.
-    """
-    ENUM
+  """
+  Indicates this type is an enum. `enumValues` is a valid field.
+  """
+  ENUM
 
-    """
-    Indicates this type is an input object. `inputFields` is a valid field.
-    """
-    INPUT_OBJECT
+  """
+  Indicates this type is an input object. `inputFields` is a valid field.
+  """
+  INPUT_OBJECT
 
-    """
-    Indicates this type is a list. `ofType` is a valid field.
-    """
-    LIST
+  """
+  Indicates this type is a list. `ofType` is a valid field.
+  """
+  LIST
 
-    """
-    Indicates this type is a non-null. `ofType` is a valid field.
-    """
-    NON_NULL
+  """
+  Indicates this type is a non-null. `ofType` is a valid field.
+  """
+  NON_NULL
 }
 
 """
@@ -521,6 +521,6 @@ This directive disables error propagation when a non nullable field returns null
 directive @experimental_disableErrorPropagation on QUERY|MUTATION|SUBSCRIPTION
 
 schema {
-    query: Query
-    mutation: Mutation
+  query: Query
+  mutation: Mutation
 }
