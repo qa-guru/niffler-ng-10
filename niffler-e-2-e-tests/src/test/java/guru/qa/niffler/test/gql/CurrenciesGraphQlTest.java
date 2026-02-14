@@ -42,5 +42,4 @@ public class CurrenciesGraphQlTest extends BaseGraphQlTest {
         all.get(3).currency.rawValue
     );
   }
-
 }

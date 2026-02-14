@@ -95,7 +95,7 @@ public abstract class RestClient {
     return this.retrofit.create(service);
   }
 
-  protected static <T> @Nonnull T executeForBody(Call<T> call, int... expectedStatus) {
+  public static <T> @Nonnull T executeForBody(Call<T> call, int... expectedStatus) {
     final Response<T> response = doExecute(call);
     assertStatus(response, expectedStatus);
     final T body = response.body();
@@ -108,7 +108,7 @@ public abstract class RestClient {
     return body;
   }
 
-  protected static void executeNoBody(Call<Void> call, int... expectedStatus) {
+  public static void executeNoBody(Call<Void> call, int... expectedStatus) {
     final Response<Void> response = doExecute(call);
     assertStatus(response, expectedStatus);
   }

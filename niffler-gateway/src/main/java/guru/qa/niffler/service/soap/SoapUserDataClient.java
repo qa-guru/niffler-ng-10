@@ -1,11 +1,5 @@
 package guru.qa.niffler.service.soap;
 
-import guru.qa.niffler.ex.NoSoapResponseException;
-import guru.qa.niffler.model.FcmTokenJson;
-import guru.qa.niffler.model.UserJson;
-import guru.qa.niffler.service.UserDataClient;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import guru.qa.jaxb.userdata.AcceptInvitationRequest;
 import guru.qa.jaxb.userdata.AllUsersPageRequest;
 import guru.qa.jaxb.userdata.AllUsersRequest;
@@ -19,6 +13,13 @@ import guru.qa.jaxb.userdata.SendInvitationRequest;
 import guru.qa.jaxb.userdata.UpdateUserRequest;
 import guru.qa.jaxb.userdata.UserResponse;
 import guru.qa.jaxb.userdata.UsersResponse;
+import guru.qa.niffler.ex.NoSoapResponseException;
+import guru.qa.niffler.model.FcmTokenJson;
+import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.service.UserDataClient;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -33,6 +34,7 @@ import java.util.Optional;
 
 @Component
 @ParametersAreNonnullByDefault
+@ConditionalOnProperty(prefix = "niffler-userdata", name = "client", havingValue = "soap")
 public class SoapUserDataClient extends WebServiceGatewaySupport implements UserDataClient {
 
   @Override

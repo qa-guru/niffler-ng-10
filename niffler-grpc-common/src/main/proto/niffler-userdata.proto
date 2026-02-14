@@ -1,0 +1,114 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "niffler-currency.proto";
+
+package guru.qa.grpc.niffler;
+
+option java_multiple_files = true;
+option java_package = "guru.qa.niffler.grpc";
+option java_outer_classname = "NifflerUserdataProto";
+
+service NifflerUserdataService {
+  rpc UpdateUser (UpdateUserRequest) returns (UserResponse) {}
+  rpc CurrentUser (CurrentUserRequest) returns (UserResponse) {}
+  rpc AllUsers (AllUsersRequest) returns (UsersResponse) {}
+  rpc SendInvitation (SendInvitationRequest) returns (UserResponse) {}
+  rpc AcceptInvitation (AcceptInvitationRequest) returns (UserResponse) {}
+  rpc DeclineInvitation (DeclineInvitationRequest) returns (UserResponse) {}
+  rpc Friends (FriendsRequest) returns (UsersResponse) {}
+  rpc RemoveFriend (RemoveFriendRequest) returns (google.protobuf.Empty) {}
+  rpc RegisterToken (RegisterPushTokenRequest) returns (google.protobuf.Empty) {}
+}
+
+message UpdateUserRequest {
+  User user = 1;
+}
+
+message CurrentUserRequest {
+  string username = 1;
+}
+
+message AllUsersRequest {
+  string username = 1;
+  PageInfo page_info = 2;
+  optional string search_query = 3;
+}
+
+message SendInvitationRequest {
+  string username = 1;
+  string friend_to_be_requested = 2;
+}
+
+message AcceptInvitationRequest {
+  string username = 1;
+  string friend_to_be_added = 2;
+}
+
+message DeclineInvitationRequest {
+  string username = 1;
+  string invitation_to_be_declined = 2;
+}
+
+message FriendsRequest {
+  string username = 1;
+  PageInfo page_info = 2;
+  optional string search_query = 3;
+}
+
+message RemoveFriendRequest {
+  string username = 1;
+  string friend_to_be_removed = 2;
+}
+
+message UserResponse {
+  User user = 1;
+}
+
+message UsersResponse {
+  repeated User users = 1;
+  int64 total_elements = 2;
+  int32 total_pages = 3;
+}
+
+message User {
+  string id = 1;
+  string username = 2;
+  optional string firstname = 3;
+  optional string surname = 4;
+  optional string fullname = 5;
+  optional CurrencyValues currency = 6;
+  optional string photo = 7;
+  optional string photo_small = 8;
+  optional FriendshipStatus friendship_status = 9;
+}
+
+message RegisterPushTokenRequest {
+  string username = 1;
+  string token = 2;
+  string user_agent = 3;
+}
+
+message Sort {
+  string property = 1;
+  Direction direction = 2;
+}
+
+message PageInfo {
+  int32 page = 1;
+  int32 size = 2;
+  repeated Sort sort = 3;
+}
+
+enum FriendshipStatus {
+  FRIENDSHIP_STATUS_UNSPECIFIED = 0;
+  INVITE_SENT = 1;
+  INVITE_RECEIVED = 2;
+  FRIEND = 3;
+}
+
+enum Direction {
+  DIRECTION_UNSPECIFIED = 0;
+  ASC = 1;
+  DESC = 2;
+}

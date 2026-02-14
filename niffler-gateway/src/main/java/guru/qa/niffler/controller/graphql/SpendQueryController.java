@@ -5,7 +5,7 @@ import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.DataFilterValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.service.SpendClient;
-import guru.qa.niffler.service.api.GrpcCurrencyClient;
+import guru.qa.niffler.service.grpc.GrpcCurrencyClient;
 import guru.qa.niffler.service.utils.GqlQueryPaginationAndSort;
 import guru.qa.niffler.validation.IsUuidString;
 import jakarta.annotation.Nullable;

@@ -1,19 +1,78 @@
 package guru.qa.niffler.test.grpc;
 
 import com.google.protobuf.Empty;
+import guru.qa.niffler.grpc.CalculateRequest;
+import guru.qa.niffler.grpc.CalculateResponse;
 import guru.qa.niffler.grpc.Currency;
 import guru.qa.niffler.grpc.CurrencyResponse;
-import org.junit.jupiter.api.Assertions;
+import guru.qa.niffler.grpc.CurrencyValues;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
+import java.util.stream.Stream;
+
+import static io.qameta.allure.Allure.step;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CurrencyGrpcTest extends BaseGrpcTest {
 
   @Test
-  void allCurrenciesShouldReturned() {
-    final CurrencyResponse response = blockingStub.getAllCurrencies(Empty.getDefaultInstance());
-    final List<Currency> allCurrenciesList = response.getAllCurrenciesList();
-    Assertions.assertEquals(4, allCurrenciesList.size());
+  void getAllCurrenciesTest() {
+    CurrencyResponse allCurrencies = step("Get all currencies", () ->
+        currencyStub.getAllCurrencies(Empty.getDefaultInstance())
+    );
+    final List<Currency> currenciesList = allCurrencies.getAllCurrenciesList();
+
+    step("Check that response contains 4 currencies", () ->
+        assertEquals(4, allCurrencies.getAllCurrenciesList().size())
+    );
+    step("Check RUB currency rate", () -> {
+      assertEquals(CurrencyValues.RUB, currenciesList.getFirst().getCurrency());
+      assertEquals(0.015, currenciesList.getFirst().getCurrencyRate());
+    });
+    step("Check KZT currency rate", () -> {
+      assertEquals(CurrencyValues.KZT, currenciesList.get(1).getCurrency());
+      assertEquals(0.0021, currenciesList.get(1).getCurrencyRate());
+    });
+    step("Check EUR currency rate", () -> {
+      assertEquals(CurrencyValues.EUR, currenciesList.get(2).getCurrency());
+      assertEquals(1.08, currenciesList.get(2).getCurrencyRate());
+    });
+    step("Check USD currency rate", () -> {
+      assertEquals(CurrencyValues.USD, currenciesList.get(3).getCurrency());
+      assertEquals(1.0, currenciesList.get(3).getCurrencyRate());
+    });
+  }
+
+  static Stream<Arguments> calculateRateTest() {
+    return Stream.of(
+        Arguments.of(CurrencyValues.USD, CurrencyValues.RUB, 100.0, 6666.67),
+        Arguments.of(CurrencyValues.USD, CurrencyValues.USD, 100.0, 100.0),
+        Arguments.of(CurrencyValues.RUB, CurrencyValues.USD, 100.0, 1.5)
+    );
+  }
+
+  @MethodSource
+  @ParameterizedTest(name = "При пересчете из {0} в {1} суммы {2} должен возвращаться результат {3}")
+  void calculateRateTest(CurrencyValues spendCurrency,
+                         CurrencyValues desiredCurrency,
+                         double amount,
+                         double expected) {
+    CalculateRequest request = CalculateRequest.newBuilder()
+        .setAmount(amount)
+        .setSpendCurrency(spendCurrency)
+        .setDesiredCurrency(desiredCurrency)
+        .build();
+
+    final CalculateResponse calculateResponse = step("Calculate rate", () ->
+        currencyStub.calculateRate(request)
+    );
+
+    step("Check calculated rate", () ->
+        assertEquals(expected, calculateResponse.getCalculatedAmount())
+    );
   }
 }

@@ -11,17 +11,16 @@ import guru.qa.niffler.service.RestClient;
 import guru.qa.niffler.service.UsersClient;
 import io.qameta.allure.Step;
 import org.jetbrains.annotations.NotNull;
-import retrofit2.Response;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static guru.qa.niffler.service.RestClient.executeForBody;
+import static guru.qa.niffler.service.RestClient.executeNoBody;
 import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
 import static java.util.Objects.requireNonNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ParametersAreNonnullByDefault
 public class UsersApiClient implements UsersClient {
@@ -35,23 +34,23 @@ public class UsersApiClient implements UsersClient {
   @Override
   @Step("Create user with username '{0}' using REST API")
   public UserJson createUser(String username, String password) {
-    try {
-      authApi.requestRegisterForm().execute();
-      authApi.register(
-          username,
-          password,
-          password,
-          ThreadSafeCookieStore.INSTANCE.cookieValue("XSRF-TOKEN")
-      ).execute();
-      UserJson createdUser = requireNonNull(userdataApi.currentUser(username).execute().body());
-      return createdUser.addTestData(
-          new TestData(
-              password
-          )
-      );
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    executeNoBody(authApi.requestRegisterForm(), 200);
+    executeNoBody(
+        authApi.register(
+            username,
+            password,
+            password,
+            ThreadSafeCookieStore.INSTANCE.cookieValue("XSRF-TOKEN")
+        ),
+        200
+    );
+    UserJson createdUser = requireNonNull(executeForBody(
+        userdataApi.currentUser(username),
+        200
+    ));
+    return createdUser.addTestData(
+        new TestData(password)
+    );
   }
 
   @Nonnull
@@ -62,19 +61,16 @@ public class UsersApiClient implements UsersClient {
     if (count > 0) {
       for (int i = 0; i < count; i++) {
         final String username = randomUsername();
-        final Response<UserJson> response;
-        final UserJson newUser;
-        try {
-          newUser = createUser(username, UserExtension.DEFAULT_PASSWORD);
-          result.add(newUser);
-          response = userdataApi.sendInvitation(
-              newUser.username(),
-              targetUser.username()
-          ).execute();
-        } catch (IOException e) {
-          throw new AssertionError(e);
-        }
-        assertEquals(200, response.code());
+        final UserJson newUser = createUser(username, UserExtension.DEFAULT_PASSWORD);
+        result.add(newUser);
+
+        executeForBody(
+            userdataApi.sendInvitation(
+                newUser.username(),
+                targetUser.username()
+            ),
+            200
+        );
 
         targetUser.testData()
             .incomeInvitations()
@@ -92,19 +88,16 @@ public class UsersApiClient implements UsersClient {
     if (count > 0) {
       for (int i = 0; i < count; i++) {
         final String username = randomUsername();
-        final Response<UserJson> response;
-        final UserJson newUser;
-        try {
-          newUser = createUser(username, UserExtension.DEFAULT_PASSWORD);
-          result.add(newUser);
-          response = userdataApi.sendInvitation(
-              targetUser.username(),
-              newUser.username()
-          ).execute();
-        } catch (IOException e) {
-          throw new RuntimeException(e);
-        }
-        assertEquals(200, response.code());
+        final UserJson newUser = createUser(username, UserExtension.DEFAULT_PASSWORD);
+        result.add(newUser);
+
+        executeForBody(
+            userdataApi.sendInvitation(
+                targetUser.username(),
+                newUser.username()
+            ),
+            200
+        );
 
         targetUser.testData()
             .outcomeInvitations()
@@ -122,24 +115,25 @@ public class UsersApiClient implements UsersClient {
     if (count > 0) {
       for (int i = 0; i < count; i++) {
         final String username = randomUsername();
-        final Response<UserJson> response;
-        final UserJson newUser;
-        try {
-          newUser = createUser(username, UserExtension.DEFAULT_PASSWORD);
-          result.add(newUser);
-          userdataApi.sendInvitation(
-              newUser.username(),
-              targetUser.username()
-          ).execute();
-          response = userdataApi.acceptInvitation(targetUser.username(), username).execute();
-        } catch (IOException e) {
-          throw new RuntimeException(e);
-        }
-        assertEquals(200, response.code());
+        final UserJson newUser = createUser(username, UserExtension.DEFAULT_PASSWORD);
+        result.add(newUser);
+
+        executeForBody(
+            userdataApi.sendInvitation(
+                newUser.username(),
+                targetUser.username()
+            ),
+            200
+        );
+
+        UserJson acceptedFriend = executeForBody(
+            userdataApi.acceptInvitation(targetUser.username(), username),
+            200
+        );
 
         targetUser.testData()
             .friends()
-            .add(response.body());
+            .add(acceptedFriend);
       }
     }
     return result;

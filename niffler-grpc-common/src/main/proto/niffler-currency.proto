@@ -33,7 +33,7 @@ message CalculateResponse {
 }
 
 enum CurrencyValues {
-  UNSPECIFIED = 0;
+  CURRENCY_UNSPECIFIED = 0;
   RUB = 1;
   USD = 2;
   EUR = 3;

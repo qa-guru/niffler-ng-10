@@ -122,6 +122,7 @@ services:
     container_name: userdata.niffler.dc
     image: ${PREFIX}/niffler-userdata-docker:latest
     ports:
+      - 8088:8088
       - 8089:8089
     environment:
       - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=384m -XX:MaxHeapSize=512m

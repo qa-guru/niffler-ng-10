@@ -1,6 +1,10 @@
 server:
   port: 8089
 
+grpc:
+  server:
+    port: 8088
+
 spring:
   application:
     name: niffler-userdata
