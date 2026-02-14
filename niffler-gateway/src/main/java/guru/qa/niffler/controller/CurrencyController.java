@@ -2,7 +2,7 @@ package guru.qa.niffler.controller;
 
 import guru.qa.niffler.config.NifflerGatewayServiceConfig;
 import guru.qa.niffler.model.CurrencyJson;
-import guru.qa.niffler.service.api.GrpcCurrencyClient;
+import guru.qa.niffler.service.grpc.GrpcCurrencyClient;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

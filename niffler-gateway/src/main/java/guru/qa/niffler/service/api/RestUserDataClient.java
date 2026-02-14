@@ -11,6 +11,7 @@ import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@ConditionalOnProperty(prefix = "niffler-userdata", name = "client", havingValue = "rest")
 @ParametersAreNonnullByDefault
 public class RestUserDataClient implements UserDataClient {
 
@@ -63,6 +65,7 @@ public class RestUserDataClient implements UserDataClient {
     ).orElseThrow(() -> new NoRestResponseException("No REST UserJson response is given [/users/update/ Route]"));
   }
 
+  @Deprecated
   @Nonnull
   @Override
   public List<UserJson> allUsers(String username, @Nullable String searchQuery) {
@@ -78,6 +81,7 @@ public class RestUserDataClient implements UserDataClient {
     );
   }
 
+  @SuppressWarnings("unchecked")
   @Nonnull
   @Override
   public Page<UserJson> allUsersV2(String username, Pageable pageable, @Nullable String searchQuery) {
@@ -97,7 +101,7 @@ public class RestUserDataClient implements UserDataClient {
 
   @Nonnull
   @Override
-  public PagedModel<UserJson> allUsersV3(String username, Pageable pageable, @javax.annotation.Nullable String searchQuery) {
+  public PagedModel<UserJson> allUsersV3(String username, Pageable pageable, @Nullable String searchQuery) {
     final ResponseEntity<PagedModelJson<UserJson>> response = restTemplate.exchange(
         nifflerUserdataApiUri + "/v3/users/all?username={username}&searchQuery={searchQuery}"
             + new HttpQueryPaginationAndSort(pageable),
@@ -112,6 +116,7 @@ public class RestUserDataClient implements UserDataClient {
         .orElseThrow(() -> new NoRestResponseException("No REST PagedModel<UserJson> response is given [/v3/users/all/ Route]"));
   }
 
+  @Deprecated
   @Nonnull
   @Override
   public List<UserJson> friends(String username, @Nullable String searchQuery) {

@@ -1,6 +1,8 @@
 package guru.qa.niffler.config;
 
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.annotation.Nonnull;
 
 enum LocalConfig implements Config {
@@ -63,6 +65,12 @@ enum LocalConfig implements Config {
   @Nonnull
   @Override
   public String currencyGrpcAddress() {
+    return "localhost";
+  }
+
+  @NotNull
+  @Override
+  public String userdataGrpcAddress() {
     return "localhost";
   }
 

@@ -1,4 +1,4 @@
-package guru.qa.niffler.service.api;
+package guru.qa.niffler.service.grpc;
 
 
 import com.google.protobuf.Empty;

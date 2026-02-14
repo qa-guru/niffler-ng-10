@@ -5,7 +5,7 @@ import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.gql.CategoryGqlInput;
 import guru.qa.niffler.model.gql.SpendGqlInput;
 import guru.qa.niffler.service.SpendClient;
-import guru.qa.niffler.service.api.GrpcCurrencyClient;
+import guru.qa.niffler.service.grpc.GrpcCurrencyClient;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Autowired;

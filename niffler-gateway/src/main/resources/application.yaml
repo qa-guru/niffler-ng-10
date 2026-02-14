@@ -18,8 +18,9 @@ logging:
     net.devh.boot.grpc: INFO
     org.springframework.boot.autoconfigure: INFO
 
+# rest , soap , grpc
 niffler-userdata:
-  client: soap
+  client: grpc
 
 ---
 spring:
@@ -44,6 +45,9 @@ grpc:
   client:
     grpcCurrencyClient:
       address: 'static://localhost:8092'
+      negotiationType: PLAINTEXT
+    grpcUserdataClient:
+      address: 'static://localhost:8088'
       negotiationType: PLAINTEXT
 
 niffler-currency:

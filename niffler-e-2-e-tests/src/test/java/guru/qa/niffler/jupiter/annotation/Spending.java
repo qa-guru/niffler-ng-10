@@ -17,4 +17,6 @@ public @interface Spending {
   CurrencyValues currency() default CurrencyValues.RUB;
 
   String category();
+
+  int addDaysToSpendDate() default 0;
 }

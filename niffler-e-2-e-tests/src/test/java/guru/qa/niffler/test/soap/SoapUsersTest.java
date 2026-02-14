@@ -9,8 +9,6 @@ import guru.qa.niffler.service.impl.UserdataSoapClient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-
 @SoapTest
 public class SoapUsersTest {
 
@@ -18,7 +16,7 @@ public class SoapUsersTest {
 
   @Test
   @User
-  void currentUserTest(UserJson user) throws IOException {
+  void currentUserTest(UserJson user) throws Exception {
     CurrentUserRequest request = new CurrentUserRequest();
     request.setUsername(user.username());
     UserResponse response = userdataSoapClient.currentUser(request);
