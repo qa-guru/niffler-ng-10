@@ -44,7 +44,7 @@ public class NifflerGatewayServiceConfig {
   @Bean
   public Jaxb2Marshaller marshaller() {
     Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-    marshaller.setContextPath("jaxb.userdata");
+    marshaller.setContextPath("guru.qa.jaxb.userdata");
     return marshaller;
   }
 

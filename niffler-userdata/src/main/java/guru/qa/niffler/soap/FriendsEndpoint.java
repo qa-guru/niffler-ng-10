@@ -2,10 +2,10 @@ package guru.qa.niffler.soap;
 
 import guru.qa.niffler.model.UserJsonBulk;
 import guru.qa.niffler.service.UserService;
-import jaxb.userdata.FriendsPageRequest;
-import jaxb.userdata.FriendsRequest;
-import jaxb.userdata.RemoveFriendRequest;
-import jaxb.userdata.UsersResponse;
+import guru.qa.jaxb.userdata.FriendsPageRequest;
+import guru.qa.jaxb.userdata.FriendsRequest;
+import guru.qa.jaxb.userdata.RemoveFriendRequest;
+import guru.qa.jaxb.userdata.UsersResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;

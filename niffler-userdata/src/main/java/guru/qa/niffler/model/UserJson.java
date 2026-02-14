@@ -6,8 +6,8 @@ import guru.qa.niffler.data.CurrencyValues;
 import guru.qa.niffler.data.UserEntity;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import jaxb.userdata.Currency;
-import jaxb.userdata.User;
+import guru.qa.jaxb.userdata.Currency;
+import guru.qa.jaxb.userdata.User;
 
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
@@ -44,8 +44,8 @@ public record UserJson(
     jaxbUser.setPhoto(photo);
     jaxbUser.setPhotoSmall(photoSmall);
     jaxbUser.setFriendshipStatus(friendshipStatus() == null ?
-        jaxb.userdata.FriendshipStatus.VOID :
-        jaxb.userdata.FriendshipStatus.valueOf(friendshipStatus().name()));
+        guru.qa.jaxb.userdata.FriendshipStatus.VOID :
+        guru.qa.jaxb.userdata.FriendshipStatus.valueOf(friendshipStatus().name()));
     return jaxbUser;
   }
 
@@ -59,7 +59,7 @@ public record UserJson(
         jaxbUser.getCurrency() != null ? CurrencyValues.valueOf(jaxbUser.getCurrency().name()) : null,
         jaxbUser.getPhoto(),
         jaxbUser.getPhotoSmall(),
-        (jaxbUser.getFriendshipStatus() != null && jaxbUser.getFriendshipStatus() != jaxb.userdata.FriendshipStatus.VOID)
+        (jaxbUser.getFriendshipStatus() != null && jaxbUser.getFriendshipStatus() != guru.qa.jaxb.userdata.FriendshipStatus.VOID)
             ? FriendshipStatus.valueOf(jaxbUser.getFriendshipStatus().name())
             : null
     );

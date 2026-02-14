@@ -1,7 +1,7 @@
 package guru.qa.niffler.soap;
 
 import guru.qa.niffler.service.PushTokenService;
-import jaxb.userdata.RegisterPushTokenRequest;
+import guru.qa.jaxb.userdata.RegisterPushTokenRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
