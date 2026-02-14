@@ -2,7 +2,7 @@ package guru.qa.niffler.soap;
 
 import guru.qa.niffler.model.UserJsonBulk;
 import jakarta.annotation.Nonnull;
-import jaxb.userdata.UsersResponse;
+import guru.qa.jaxb.userdata.UsersResponse;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
