@@ -12,7 +12,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 @GqlTest
-public class BaseGraphQlTest {
+public abstract class BaseGraphQlTest {
 
   protected static final Config CFG = Config.getInstance();
 
