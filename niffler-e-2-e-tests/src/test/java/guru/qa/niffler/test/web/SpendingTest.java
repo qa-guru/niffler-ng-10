@@ -8,12 +8,15 @@ import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.Bubble;
+import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.MainPage;
 import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.Test;
 
 import java.awt.image.BufferedImage;
 import java.util.Date;
+import java.util.List;
 
 @WebTest
 public class SpendingTest {
@@ -111,10 +114,16 @@ public class SpendingTest {
   )
   @ApiLogin
   @ScreenShotTest("img/expected-stat.png")
-  void checkStatComponentTest(BufferedImage expected) {
-    new MainPage().getStatComponent()
+  void checkStatComponentTest(UserJson user, BufferedImage expected) {
+    final List<SpendJson> spendings = user.testData().spendings();
+
+    final MainPage mainPage = new MainPage();
+    mainPage.getStatComponent()
         .checkBubbles(new Bubble(Color.yellow, "Обучение 79990 ₽"))
         .checkStatisticImage(expected);
+
+    mainPage.getSpendingTable()
+        .checkTableContains(spendings);
   }
 
   @User(
