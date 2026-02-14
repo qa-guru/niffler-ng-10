@@ -11,6 +11,7 @@ import jakarta.validation.constraints.Size;
 
 import java.util.UUID;
 
+import static guru.qa.niffler.grpc.CurrencyValues.CURRENCY_UNSPECIFIED;
 import static guru.qa.niffler.grpc.FriendshipStatus.FRIENDSHIP_STATUS_UNSPECIFIED;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -114,7 +115,9 @@ public record UserJson(
         grpcUser.getFirstname(),
         grpcUser.getSurname(),
         grpcUser.getFullname(),
-        CurrencyValues.valueOf(grpcUser.getCurrency().name()),
+        grpcUser.getCurrency() != CURRENCY_UNSPECIFIED
+            ? CurrencyValues.valueOf(grpcUser.getCurrency().name())
+            : null,
         grpcUser.getPhoto(),
         grpcUser.getPhotoSmall(),
         grpcUser.getFriendshipStatus() != FRIENDSHIP_STATUS_UNSPECIFIED

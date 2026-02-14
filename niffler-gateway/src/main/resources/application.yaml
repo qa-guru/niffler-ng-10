@@ -81,6 +81,9 @@ grpc:
     grpcCurrencyClient:
       address: 'static://currency.niffler.dc:8092'
       negotiationType: PLAINTEXT
+    grpcUserdataClient:
+      address: 'static://userdata.niffler.dc:8088'
+      negotiationType: PLAINTEXT
 
 niffler-currency:
   base-uri: 'http://currency.niffler.dc:8091'

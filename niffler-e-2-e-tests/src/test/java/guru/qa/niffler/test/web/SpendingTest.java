@@ -113,7 +113,7 @@ public class SpendingTest {
       )
   )
   @ApiLogin
-  @ScreenShotTest("img/expected-stat.png")
+  @ScreenShotTest(value = "expected-stat.png")
   void checkStatComponentTest(UserJson user, BufferedImage expected) {
     final List<SpendJson> spendings = user.testData().spendings();
 
@@ -151,7 +151,7 @@ public class SpendingTest {
       }
   )
   @ApiLogin
-  @ScreenShotTest("img/expected-stat-archived.png")
+  @ScreenShotTest(value = "expected-stat-archived.png")
   void statComponentShouldDisplayArchivedCategories(BufferedImage expected) {
     new MainPage().getStatComponent()
         .checkBubbles(

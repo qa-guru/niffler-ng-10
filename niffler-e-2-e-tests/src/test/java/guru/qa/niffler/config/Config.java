@@ -64,5 +64,10 @@ public interface Config {
   }
 
   @Nonnull
-  String githubUrl();
+  default String githubUrl() {
+    return "https://api.github.com/";
+  };
+
+  @Nonnull
+  String screenshotBaseDir();
 }
