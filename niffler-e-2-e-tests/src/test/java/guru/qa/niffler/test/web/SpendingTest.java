@@ -116,16 +116,6 @@ public class SpendingTest {
   @ScreenShotTest("img/expected-stat.png")
   void checkStatComponentTest(UserJson user, BufferedImage expected) {
     final List<SpendJson> spendings = user.testData().spendings();
-    SpendJson incorrectSpend = new SpendJson(
-        spendings.getFirst().id(),
-        spendings.getFirst().spendDate(),
-        spendings.getFirst().category(),
-        spendings.getFirst().currency(),
-        spendings.getFirst().amount() + 1,
-        spendings.getFirst().description(),
-        spendings.getFirst().description()
-    );
-
 
     final MainPage mainPage = new MainPage();
     mainPage.getStatComponent()
@@ -133,7 +123,7 @@ public class SpendingTest {
         .checkStatisticImage(expected);
 
     mainPage.getSpendingTable()
-        .checkTableContains(List.of(incorrectSpend));
+        .checkTableContains(spendings);
   }
 
   @User(
