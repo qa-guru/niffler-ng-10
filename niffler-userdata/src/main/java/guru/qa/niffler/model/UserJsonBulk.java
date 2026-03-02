@@ -11,6 +11,7 @@ import jakarta.annotation.Nonnull;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
+import static guru.qa.niffler.grpc.CurrencyValues.CURRENCY_UNSPECIFIED;
 import static guru.qa.niffler.grpc.FriendshipStatus.FRIENDSHIP_STATUS_UNSPECIFIED;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -96,7 +97,9 @@ public record UserJsonBulk(
         UUID.fromString(grpcUser.getId()),
         grpcUser.getUsername(),
         grpcUser.getFullname(),
-        CurrencyValues.valueOf(grpcUser.getCurrency().name()),
+        grpcUser.getCurrency() != CURRENCY_UNSPECIFIED
+            ? CurrencyValues.valueOf(grpcUser.getCurrency().name())
+            : null,
         grpcUser.getPhotoSmall(),
         grpcUser.getFriendshipStatus() != FRIENDSHIP_STATUS_UNSPECIFIED
             ? FriendshipStatus.valueOf(grpcUser.getFriendshipStatus().name())

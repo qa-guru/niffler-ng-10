@@ -1,7 +1,6 @@
 package guru.qa.niffler.config;
 
 
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 
@@ -68,7 +67,7 @@ enum LocalConfig implements Config {
     return "localhost";
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String userdataGrpcAddress() {
     return "localhost";
@@ -78,5 +77,11 @@ enum LocalConfig implements Config {
   @Override
   public String githubUrl() {
     return "https://api.github.com/";
+  }
+
+  @Nonnull
+  @Override
+  public String screenshotBaseDir() {
+    return "screenshots/local/";
   }
 }

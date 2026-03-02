@@ -33,27 +33,27 @@ public abstract class RestClient {
   private final Retrofit retrofit;
 
   public RestClient(String baseUrl) {
-    this(baseUrl, false, JacksonConverterFactory.create(), HttpLoggingInterceptor.Level.HEADERS, null);
+    this(baseUrl, false, JacksonConverterFactory.create(), HttpLoggingInterceptor.Level.BASIC, null);
   }
 
   public RestClient(String baseUrl, boolean followRedirect) {
-    this(baseUrl, followRedirect, JacksonConverterFactory.create(), HttpLoggingInterceptor.Level.HEADERS, null);
+    this(baseUrl, followRedirect, JacksonConverterFactory.create(), HttpLoggingInterceptor.Level.BASIC, null);
   }
 
   public RestClient(String baseUrl, boolean followRedirect, Converter.Factory converterFactory) {
-    this(baseUrl, followRedirect, converterFactory, HttpLoggingInterceptor.Level.HEADERS, null);
+    this(baseUrl, followRedirect, converterFactory, HttpLoggingInterceptor.Level.BASIC, null);
   }
 
   public RestClient(String baseUrl, Converter.Factory converterFactory) {
-    this(baseUrl, false, converterFactory, HttpLoggingInterceptor.Level.HEADERS, null);
+    this(baseUrl, false, converterFactory, HttpLoggingInterceptor.Level.BASIC, null);
   }
 
   public RestClient(String baseUrl, boolean followRedirect, Interceptor... interceptors) {
-    this(baseUrl, followRedirect, JacksonConverterFactory.create(), HttpLoggingInterceptor.Level.HEADERS, interceptors);
+    this(baseUrl, followRedirect, JacksonConverterFactory.create(), HttpLoggingInterceptor.Level.BASIC, interceptors);
   }
 
   public RestClient(String baseUrl, boolean followRedirect, Converter.Factory converterFactory, Interceptor... interceptors) {
-    this(baseUrl, followRedirect, converterFactory, HttpLoggingInterceptor.Level.HEADERS, interceptors);
+    this(baseUrl, followRedirect, converterFactory, HttpLoggingInterceptor.Level.BASIC, interceptors);
   }
 
   public RestClient(String baseUrl, boolean followRedirect, Converter.Factory converterFactory, HttpLoggingInterceptor.Level level, @Nullable Interceptor... interceptors) {

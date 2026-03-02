@@ -1,6 +1,7 @@
 package guru.qa.niffler.jupiter.extension;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.model.allure.ScreenDif;
 import io.qameta.allure.Allure;
@@ -21,8 +22,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Base64;
 
+import static guru.qa.niffler.jupiter.extension.TestMethodContextExtension.context;
+
 @ParametersAreNonnullByDefault
 public class ScreenShotTestExtension implements ParameterResolver, TestExecutionExceptionHandler {
+
+  private static final Config CFG = Config.getInstance();
 
   public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(ScreenShotTestExtension.class);
   public static final String ASSERT_SCREEN_MESSAGE = "Screen comparison failure";
@@ -42,7 +47,7 @@ public class ScreenShotTestExtension implements ParameterResolver, TestExecution
     final ScreenShotTest screenShotTest = extensionContext.getRequiredTestMethod().getAnnotation(ScreenShotTest.class);
     return ImageIO.read(
         new ClassPathResource(
-            screenShotTest.value()
+            CFG.screenshotBaseDir() + screenShotTest.value()
         ).getInputStream()
     );
   }
@@ -50,55 +55,57 @@ public class ScreenShotTestExtension implements ParameterResolver, TestExecution
   @Override
   public void handleTestExecutionException(ExtensionContext context, Throwable throwable) throws Throwable {
     final ScreenShotTest screenShotTest = context.getRequiredTestMethod().getAnnotation(ScreenShotTest.class);
-    if (screenShotTest.rewriteExpected()) {
-      final BufferedImage actual = getActual();
-      if (actual != null) {
-        ImageIO.write(
-            actual,
-            "png",
-            new File("src/test/resources/" + screenShotTest.value())
+    if (screenShotTest != null) {
+      if (screenShotTest.rewriteExpected()) {
+        final BufferedImage actual = getActual();
+        if (actual != null) {
+          ImageIO.write(
+              actual,
+              "png",
+              new File(".screen-output/" + CFG.screenshotBaseDir() + screenShotTest.value())
+          );
+        }
+      }
+
+      if (throwable.getMessage().contains(ASSERT_SCREEN_MESSAGE)) {
+        ScreenDif screenDif = new ScreenDif(
+            "data:image/png;base64," + encoder.encodeToString(imageToBytes(getExpected())),
+            "data:image/png;base64," + encoder.encodeToString(imageToBytes(getActual())),
+            "data:image/png;base64," + encoder.encodeToString(imageToBytes(getDiff()))
+        );
+
+        Allure.addAttachment(
+            "Screenshot diff",
+            "application/vnd.allure.image.diff",
+            objectMapper.writeValueAsString(screenDif)
         );
       }
-    }
-
-    if (throwable.getMessage().contains(ASSERT_SCREEN_MESSAGE)) {
-      ScreenDif screenDif = new ScreenDif(
-          "data:image/png;base64," + encoder.encodeToString(imageToBytes(getExpected())),
-          "data:image/png;base64," + encoder.encodeToString(imageToBytes(getActual())),
-          "data:image/png;base64," + encoder.encodeToString(imageToBytes(getDiff()))
-      );
-
-      Allure.addAttachment(
-          "Screenshot diff",
-          "application/vnd.allure.image.diff",
-          objectMapper.writeValueAsString(screenDif)
-      );
     }
     throw throwable;
   }
 
   public static void setExpected(BufferedImage expected) {
-    TestMethodContextExtension.context().getStore(NAMESPACE).put("expected", expected);
+    context().getStore(NAMESPACE).put("expected", expected);
   }
 
   public static BufferedImage getExpected() {
-    return TestMethodContextExtension.context().getStore(NAMESPACE).get("expected", BufferedImage.class);
+    return context().getStore(NAMESPACE).get("expected", BufferedImage.class);
   }
 
   public static void setActual(BufferedImage actual) {
-    TestMethodContextExtension.context().getStore(NAMESPACE).put("actual", actual);
+    context().getStore(NAMESPACE).put("actual", actual);
   }
 
   public static BufferedImage getActual() {
-    return TestMethodContextExtension.context().getStore(NAMESPACE).get("actual", BufferedImage.class);
+    return context().getStore(NAMESPACE).get("actual", BufferedImage.class);
   }
 
   public static void setDiff(BufferedImage diff) {
-    TestMethodContextExtension.context().getStore(NAMESPACE).put("diff", diff);
+    context().getStore(NAMESPACE).put("diff", diff);
   }
 
   public static BufferedImage getDiff() {
-    return TestMethodContextExtension.context().getStore(NAMESPACE).get("diff", BufferedImage.class);
+    return context().getStore(NAMESPACE).get("diff", BufferedImage.class);
   }
 
   private static byte[] imageToBytes(BufferedImage image) {
