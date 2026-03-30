@@ -11,6 +11,8 @@ public interface Config {
         : LocalConfig.INSTANCE;
   }
 
+  String projectId = "niffler-ng-10";
+
   @Nonnull
   default String testDatabaseUsername() {
     return "postgres";
@@ -70,4 +72,7 @@ public interface Config {
 
   @Nonnull
   String screenshotBaseDir();
+
+  @Nonnull
+  String allureDockerUrl();
 }
