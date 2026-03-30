@@ -34,6 +34,7 @@ public class AllureDockerExtension implements SuiteExtension {
         allureDockerApiClient.createProjectIfNotExist(projectId);
         allureDockerApiClient.clean(projectId);
       } catch (Throwable e) {
+        LOG.error("### FAILED TO CREATE PROJECT OR CLEAN UP");
         allureBroken = true;
         // do nothing
       }
@@ -42,6 +43,7 @@ public class AllureDockerExtension implements SuiteExtension {
 
   @Override
   public void afterSuite() {
+    LOG.info("### UPLOAD ARTIFACTS");
     if (inDocker && !allureBroken) {
       try (Stream<Path> paths = Files.walk(allureResultsDirectory).filter(Files::isRegularFile)) {
         List<DecodedAllureFile> filesToSend = new ArrayList<>();
@@ -55,12 +57,14 @@ public class AllureDockerExtension implements SuiteExtension {
             );
           }
         }
+        LOG.info("### SEND RESULTS");
         allureDockerApiClient.sendResultsToAllure(
             projectId,
             new AllureResults(
                 filesToSend
             )
         );
+        LOG.info("### GENERATE REPORT");
         allureDockerApiClient.generateReport(
             projectId,
             System.getenv("HEAD_COMMIT_MESSAGE"),
@@ -68,7 +72,7 @@ public class AllureDockerExtension implements SuiteExtension {
             System.getenv("EXECUTION_TYPE")
         );
       } catch (Throwable e) {
-        // do nothing
+        LOG.error("### FAILED TO GENERATE REPORT", e);
       }
     }
   }
