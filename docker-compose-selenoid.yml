@@ -1,0 +1,32 @@
+services:
+  selenoid:
+    container_name: selenoid
+    image: adtechqatools/selenoid:latest-release
+    platform: linux/arm64
+    volumes:
+      - ./selenoid:/etc/selenoid
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - TZ=Europe/Moscow
+    restart: unless-stopped
+    command: [ "-conf", "/etc/selenoid/browsers.json", "-limit", "3", "-video-output-dir", "/opt/selenoid/video", "-log-output-dir", "/opt/selenoid/logs", "-container-network", "niffler-ng-10_niffler-network" ]
+    ports:
+      - 4444:4444
+    networks:
+      - niffler-network
+
+  selenoid-ui:
+    container_name: selenoid-ui
+    image: aerokube/selenoid-ui:1.10.11
+    depends_on:
+      - selenoid
+    restart: unless-stopped
+    ports:
+      - 9091:8080
+    command: [ "--selenoid-uri", "http://selenoid:4444" ]
+    networks:
+      - niffler-network
+
+networks:
+  niffler-network:
+    driver: bridge
